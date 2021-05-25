@@ -15,7 +15,7 @@ class DisplaySectionDetails extends React.Component {
     const canvas = drizzle.contracts.Canvas;
 
     // let drizzle know we want to call the `checkSection` method with `value`
-    const section = canvas.methods["checkSection"].cacheCall(value);
+    const section = canvas.methods["getSection"].cacheCall(value);
     this.setState({ section, value, canvas});
   };
 
@@ -24,7 +24,7 @@ class DisplaySectionDetails extends React.Component {
 
     const { Canvas } = this.props.drizzleState.contracts;
 
-    const section = Canvas.checkSection[this.state.section];
+    const section = Canvas.getSection[this.state.section];
 
       return (<div>
         <p>Section details</p> 

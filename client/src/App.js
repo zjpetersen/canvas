@@ -1,10 +1,14 @@
 // import logo from './logo.svg';
 // import './App.css';
 import React from 'react';
-import ReadSection from "./ReadSection";
-import BuySectionFree from "./BuySectionFree";
-import DisplaySectionDetails from "./DisplaySectionDetails";
-import SetColor from "./SetColor";
+import DisplayCanvas from "./DisplayCanvas";
+import Home from './Home';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route
+} from "react-router-dom";
+import Navigation from './Navigation';
 
 class App extends React.Component {
   state = { loading: true, drizzleState: null };
@@ -31,30 +35,21 @@ class App extends React.Component {
 
   render() {
     if (this.state.loading) return "Loading Drizzle...";
-    return (
+  return (
+    <Router>
       <div className="App">
-        <ReadSection
-          drizzle={this.props.drizzle}
-          drizzleState={this.state.drizzleState}
-        />
-        <DisplaySectionDetails
-          drizzle={this.props.drizzle}
-          drizzleState={this.state.drizzleState}
-        />
-        <BuySectionFree
-          drizzle={this.props.drizzle}
-          drizzleState={this.state.drizzleState}
-        />
-        <SetColor
-          drizzle={this.props.drizzle}
-          drizzleState={this.state.drizzleState}
-        />
+        <Navigation />
+        <Switch> {/* The Switch decides which component to show based on the current URL.*/}
+          {/* <Route exact path='/' component={Main}></Route>
+          <Route exact path='/bonus' component={SetColor drizzle={this.props.drizzle} drizzleState={this.props.drizzleState}}></Route> */}
+          <Route exact path='/' ><Home drizzle={this.props.drizzle} drizzleState={this.state.drizzleState}/></Route>
+          <Route exact path='/canvas' > <DisplayCanvas drizzle={this.props.drizzle} drizzleState={this.state.drizzleState}/></Route>
+        </Switch>
       </div>
-    );
+    </Router>
+  );
   }
 
 }
 
 export default App;
-
-

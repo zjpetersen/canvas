@@ -61,4 +61,14 @@ contract("Canvas", (accounts) => {
    });
 
  });
+
+ describe("test get all sections", async () => {
+   it("can get all sections", async () => {
+     const sections = await canvas.getSections({from :accounts[0]});
+     const section = sections[sectionId];
+
+     assert.equal(section.encodedColor, "blue", "Should be able to get color from sections");
+   });
+
+ });
 });

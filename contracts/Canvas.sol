@@ -42,8 +42,12 @@ contract Canvas {
         return getValidRegion(regionId).encodedColor;
     }
 
-    function checkSection(uint regionId) public view returns (Section memory) {
+    function getSection(uint regionId) public view returns (Section memory) {
         return getValidRegion(regionId);
+    }
+
+    function getSections() public view returns (Section[100] memory) {
+        return sections;
     }
 
     function getSectionForFree(uint sectionId) public {
