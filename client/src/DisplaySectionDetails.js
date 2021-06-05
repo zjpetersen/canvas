@@ -1,31 +1,18 @@
 import React from "react";
 
 class DisplaySectionDetails extends React.Component {
-  state = { section: null, sectionId: '', canvas: null};
-
-  handleKeyDown = e => {
-    // if the enter key is pressed, set the value with the string
-    if (e.keyCode === 13) {
-      this.setValue(e.target.value);
-    }
-  };
-
-  setValue = value => {
-    const { drizzle } = this.props;
-    const canvas = drizzle.contracts.Canvas;
-
-    // let drizzle know we want to call the `checkSection` method with `value`
-    const section = canvas.methods["getSection"].cacheCall(value);
-    this.setState({ section, value, canvas});
-  };
+  state = { section: null, sectionId: null, canvas: null};
 
   getSectionDetails = () => {
-    if (!this.state.section) {return null;}
+    if (!this.props.currentSection) {return (<div>
+      <p>No section selected</p>
+      </div>
+      );
+    }
 
     const { Canvas } = this.props.drizzleState.contracts;
-
-    const section = Canvas.getSection[this.state.section];
-
+    const section = Canvas.getSection[this.props.currentSection];
+    
       return (<div>
         <p>Section details</p> 
           <p>Owner: {section && section.value.owner}</p>
@@ -38,7 +25,6 @@ class DisplaySectionDetails extends React.Component {
   render() {
     return (
       <div>
-        <input type="text" onKeyDown={this.handleKeyDown} />
         <div>{this.getSectionDetails()}</div>
         <br/>
         <br/>

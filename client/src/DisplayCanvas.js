@@ -1,12 +1,22 @@
 import React from "react";
+import DisplaySectionDetails from './DisplaySectionDetails';
 
 class DisplayCanvas extends React.Component {
-  state = { sectionsArray: null, sections: null, canvas: null};
+  state = { sectionsArray: null, sections: null, canvas: null, currentSection: null};
 
   componentDidMount() {
     const canvasRef = this.props.drizzle.contracts.Canvas;
     const sectionsArray = canvasRef.methods["getSections"].cacheCall();
     this.setState({sectionsArray: sectionsArray});
+  }
+
+  setCurrentSection(i) {
+    const { drizzle } = this.props;
+    const canvas = drizzle.contracts.Canvas;
+
+    // let drizzle know we want to call the `checkSection` method with `value`
+    const section = canvas.methods["getSection"].cacheCall(i);
+    this.setState({ currentSection: section});
   }
 
   buildRow = (sections, start, end, ROW_SIZE) => {
@@ -23,7 +33,7 @@ class DisplayCanvas extends React.Component {
             width: "34px",
             float: "left"
         };
-        row.push(<div key={i} style={style}/>);
+        row.push(<div key={i} style={style} onClick={() => this.setCurrentSection(i) }/>);
      }
         const styleRow = {
             clear: "both",
@@ -55,6 +65,12 @@ class DisplayCanvas extends React.Component {
     return (
       <div>
         <div>{this.buildCanvas()}</div>
+        
+        <DisplaySectionDetails
+          drizzle={this.props.drizzle}
+          drizzleState={this.props.drizzleState}
+          currentSection={this.state.currentSection}
+        />
       </div>
     );
   }
