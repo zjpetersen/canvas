@@ -1,6 +1,5 @@
 import React from 'react';
 import BuySectionFree from "./BuySectionFree";
-import SetColor from "./SetColor";
 import './style/Home.css';
 
 class Home extends React.Component {
@@ -8,12 +7,12 @@ class Home extends React.Component {
 
   header = () => {
     let result = 
-      <header class="image sizing" id="head">
-        <div class="canvas background-text">
-          <span class="canvas-tag">Canvas</span>
+      <header className="image sizing" id="head">
+        <div className="canvas background-text">
+          <span className="canvas-tag">Canvas</span>
         </div>
-        <div class="bottom">
-          <span class="background-text">Collaborative art</span>
+        <div className="bottom">
+          <span className="background-text">Collaborative art</span>
         </div>
       </header>
 
@@ -23,14 +22,14 @@ class Home extends React.Component {
   info = () => {
     let result = 
       <div>
-        <div class="info">
+        <div className="info">
           <h2>How does it work?</h2>
           <p>Canvas is a Dapp running on the ethereum blockchain.  
             Users are able to create their own artwork and add it to a section of the canvas.
             If other users find it valuable, they can purchase and modify the section, or keep it the same.</p>
 
-            <h2>Want to get involved?</h2>
-            <p>Free sections are going fast, but there are still some available! Claim yours now to make your mark.  </p>
+          <h2>Want to get involved?</h2>
+          <p>Free sections are going fast, but there are still some available! Claim yours now to make your mark.  </p>
 
         </div>
 
@@ -47,7 +46,7 @@ render() {
     return (
       <div>
         {this.header()}
-      <div class="home content">
+      <div className="home content">
         {this.info()}
         {/* <ReadSection
           drizzle={this.props.drizzle}
@@ -61,12 +60,12 @@ render() {
           drizzle={this.props.drizzle}
           drizzleState={this.props.drizzleState}
         />
-        <SetColor
+        {/* <SetColor
           drizzle={this.props.drizzle}
           drizzleState={this.props.drizzleState}
-        />
+        /> */}
       </div>
-      <div class="footer">Want to learn more? Check out our GitHub.</div>
+      <div className="footer">Want to learn more? Check out our GitHub.</div>
      </div>
     );
 }

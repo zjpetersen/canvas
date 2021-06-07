@@ -13,6 +13,9 @@ const Navigation = () => {
           <li>
             <NavLink id="nav" exact activeClassName="current" to="/canvas">Canvas</NavLink>
           </li>
+          <li>
+            <NavLink id="nav" exact activeClassName="current" to="/upload">Update Artwork</NavLink>
+          </li>
         </ul>
   );
 }

@@ -9,6 +9,7 @@ import {
   Route
 } from "react-router-dom";
 import Navigation from './Navigation';
+import SetColor from './SetColor';
 
 class App extends React.Component {
   state = { loading: true, drizzleState: null };
@@ -44,6 +45,7 @@ class App extends React.Component {
           <Route exact path='/bonus' component={SetColor drizzle={this.props.drizzle} drizzleState={this.props.drizzleState}}></Route> */}
           <Route exact path='/' ><Home drizzle={this.props.drizzle} drizzleState={this.state.drizzleState}/></Route>
           <Route exact path='/canvas' > <DisplayCanvas drizzle={this.props.drizzle} drizzleState={this.state.drizzleState}/></Route>
+          <Route exact path='/upload' > <SetColor drizzle={this.props.drizzle} drizzleState={this.state.drizzleState}/></Route>
         </Switch>
       </div>
     </Router>
