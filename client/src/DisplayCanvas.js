@@ -1,6 +1,15 @@
 import React from "react";
 import DisplaySectionDetails from './DisplaySectionDetails';
 import './style/DisplayCanvas.css';
+import {Base64} from 'js-base64';
+
+const WIDTH = 160;
+const HEIGHT = 160;
+const ROW_SIZE = 10;
+const COLUMN_SIZE = 10;
+const SECTION_SIZE = 16;
+const SCALING_FACTOR = 1;
+
 
 class DisplayCanvas extends React.Component {
 
@@ -8,6 +17,7 @@ class DisplayCanvas extends React.Component {
     super(props);
     this.state = { sectionsArray: null, sections: null, canvas: null, currentSection: null};
     this.setCurrentSection = this.setCurrentSection.bind(this);
+    this.convertToDataUrl = this.convertToDataUrl.bind(this);
   }
 
   componentDidMount() {
@@ -67,7 +77,6 @@ class DisplayCanvas extends React.Component {
     if (!sections) { return;}
 
     let result = [];
-    const ROW_SIZE = 10;
     //Naive for loop, look to clean this up
     for (let i = 0; i < sections.value.length; i+=ROW_SIZE) {
         result.push(this.buildRow(sections, i, i+ROW_SIZE, ROW_SIZE));
@@ -75,10 +84,26 @@ class DisplayCanvas extends React.Component {
 
     return result;
   }
-  colorImages = (row, col, pix, SECTION_SIZE, ROW_SIZE, COLUMN_SIZE, sections, sectionId, context) => {
+
+  convertToDataUrl(color) {
+    color = color.substr(2, color.length);
+    let bytes = [];
+    for (let c = 0; c < color.length; c += 2) {
+      bytes.push(parseInt(color.substr(c, 2), 16));
+    }
+    let int8arr = Uint8Array.from(bytes);
+    color = 'data:image/png;base64,';
+    color += Base64.fromUint8Array(int8arr);
+    return color;
+  }
+
+  colorImages = (row, col, pix, SECTION_SIZE, sections, sectionId, context) => {
     let section = sections.value[sectionId];
-    let color = section.encodedColor;
-    // let color = section.encodedColor ? section.encodedColor : "#00FF00"; //green
+    let color = section.colorBytes;
+    if (color.startsWith('0x') && color.length > 2) {
+      color = this.convertToDataUrl(color);
+    }
+
     if (color.startsWith("data:image")) {
       let img = new Image(); //TODO get image
       //Need event listener to make sure image has loaded before we write it to the canvas
@@ -143,19 +168,15 @@ class DisplayCanvas extends React.Component {
     if (!sections) { return;}
 
     // let result = [];
-    const ROW_SIZE = 10;
-    const COLUMN_SIZE = 10;
-    const SECTION_SIZE = 16;
-    const SCALING_FACTOR = 1;
     let canvas = document.getElementById("myCanvas");
     if (!canvas) {
       return;
     }
     let context = canvas.getContext("2d");
     // context.fillStyle = "#000000";
-    context.fillRect(0,0, 160*SCALING_FACTOR, 160*SCALING_FACTOR);
+    context.fillRect(0,0, WIDTH*SCALING_FACTOR, HEIGHT*SCALING_FACTOR);
 
-    let imgd = context.getImageData(0, 0, 160*SCALING_FACTOR, 160*SCALING_FACTOR);
+    let imgd = context.getImageData(0, 0, WIDTH*SCALING_FACTOR, HEIGHT*SCALING_FACTOR);
     let pix = imgd.data;
     // console.log(pix);
     let sectionId = 0;
@@ -172,7 +193,7 @@ class DisplayCanvas extends React.Component {
     sectionId = 0;
     for (let i = 0; i < ROW_SIZE; i++) {
       for (let j = 0; j < COLUMN_SIZE; j++, sectionId++) {
-        this.colorImages(i, j, pix, SECTION_SIZE*SCALING_FACTOR, ROW_SIZE, COLUMN_SIZE, sections, sectionId, context);
+        this.colorImages(i, j, pix, SECTION_SIZE*SCALING_FACTOR, sections, sectionId, context);
       }
     }
   }
@@ -181,7 +202,7 @@ class DisplayCanvas extends React.Component {
     let style={
       border: "1px solid #000000",
     };
-    let result = <canvas id="myCanvas" width="160" height="160" style={style} ></canvas>;
+    let result = <canvas id="myCanvas" width={WIDTH} height={HEIGHT} style={style} ></canvas>;
     return result;
   }
 

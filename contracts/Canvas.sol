@@ -4,6 +4,7 @@ contract Canvas {
     struct Section {
         address payable owner;
         string encodedColor;
+        bytes colorBytes;
         uint offer;
         uint ask;
         bool updatedColor;
@@ -18,6 +19,7 @@ contract Canvas {
     event SectionPurchased(uint sectionId, address buyer, address seller, uint price);
     event AskUpdated(uint sectionId, address owner, uint ask);
     event ColorUpdated(uint sectionId, address owner, string updatedColor);
+    event ColorBytesUpdated(uint sectionId, address owner, bytes updatedColor);
 
     /// The region id must be 0-99
     error InvalidRegion();
@@ -40,6 +42,10 @@ contract Canvas {
 
     function getColor(uint regionId) public view returns (string memory) {
         return getValidRegion(regionId).encodedColor;
+    }
+
+    function getColorBytes(uint regionId) public view returns (bytes memory) {
+        return getValidRegion(regionId).colorBytes;
     }
 
     function getSection(uint regionId) public view returns (Section memory) {
@@ -97,6 +103,16 @@ contract Canvas {
         emit ColorUpdated(regionId, msg.sender, color);
     }
 
+    function setColorBytes(uint regionId, bytes memory color) public {
+        Section storage section = getValidRegion(regionId);
+        require(isOwner(section));
+        require(!section.updatedColor);
+        //TODO validate color string
+
+        section.colorBytes = color;
+        section.updatedColor = true;
+        emit ColorBytesUpdated(regionId, msg.sender, color);
+    }
 
     function getValidRegion(uint regionId) private view returns (Section storage) {
         require(regionId >= 0 && regionId < 100);
