@@ -9,3 +9,11 @@ canvas#myCanvas {
   image-rendering: pixelated;                 /* Seems to be most important       */
   -ms-interpolation-mode: nearest-neighbor;   /* IE                            */
 }
+
+div#divCanvas {
+  /* float: left; */
+  display: inline-block;
+  border-style: solid;
+  border-color: #000000;
+  border-width: 1px;
+}

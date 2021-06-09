@@ -17,6 +17,7 @@ class DisplaySectionDetails extends React.Component {
         <p>Section details</p> 
           <p>Owner: {section && section.value.owner}</p>
           <p>Color: {section && section.value.encodedColor}</p>
+          <p>Color Bytes: {section && section.value.colorBytes}</p>
           <p>Offer: {section && section.value.offer}</p>
         </div>
       );

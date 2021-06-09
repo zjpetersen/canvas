@@ -45,32 +45,48 @@ class DisplayCanvas extends React.Component {
   }
 
   buildRow = (sections, start, end, ROW_SIZE) => {
-     let row = [];
-     for (let i = start; i < end; i++) {
-         if (sections.value.length === i) {
-             break;
-         }
-        let section = sections.value[i];
-        let color = section.encodedColor ? section.encodedColor : "green";
-        let style = {
-            backgroundColor: color,
-            height: "34px",
-            width: "34px",
-            float: "left"
-        };
-        row.push(<div key={i} style={style} onClick={() => this.setCurrentSection(i) }/>);
-     }
-        const styleRow = {
-            clear: "both",
-            content: "",
-            display: "table",
-        };
-        let rowId = "row" + (start / ROW_SIZE);
-     return <div key={rowId} style={styleRow}>{row}<br></br></div>;
+    let row = [];
+    for (let i = start; i < end; i++) {
+      if (sections.value.length === i) {
+        break;
+      }
+      let section = sections.value[i];
+      let color = section.encodedColor ? section.encodedColor : "#f2eac9";
+      let style = {
+        backgroundColor: color,
+        height: "64px",
+        width: "64px",
+        float: "left"
+      };
+      let styleImg = {
+        float: "left",
+      }
+      let imgSrc = section.colorBytes;
+      if (imgSrc.startsWith('0x') && imgSrc.length > 2) {
+        imgSrc = this.convertToDataUrl(imgSrc);
+      }
+      if (imgSrc.startsWith("data:image")) {
+        let image = <img src={imgSrc} style={styleImg}/>
+        row.push(<div key={i} style={style} onClick={() => this.setCurrentSection(i)}>{image}</div>);
+      } else {
+        row.push(<div key={i} style={style} onClick={() => this.setCurrentSection(i)} />);
+      }
+
+    }
+    const styleRow = {
+      clear: "both",
+      content: "",
+      display: "table",
+    };
+    let rowId = "row" + (start / ROW_SIZE);
+    return <div key={rowId} style={styleRow}>{row}<br></br></div>;
 
   }
 
   buildCanvas = () => {
+    var d = new Date();
+    var n = d.getTime();
+
     const { Canvas } = this.props.drizzleState.contracts;
 
     const sections = Canvas.getSections[this.state.sectionsArray];
@@ -81,6 +97,11 @@ class DisplayCanvas extends React.Component {
     for (let i = 0; i < sections.value.length; i+=ROW_SIZE) {
         result.push(this.buildRow(sections, i, i+ROW_SIZE, ROW_SIZE));
     }
+
+    var d2 = new Date();
+    var n2 = d2.getTime();
+    console.log("buildCanvas time");
+    console.log(n2-n);
 
     return result;
   }
@@ -105,13 +126,12 @@ class DisplayCanvas extends React.Component {
     }
 
     if (color.startsWith("data:image")) {
-      let img = new Image(); //TODO get image
+      let img = new Image(); 
       //Need event listener to make sure image has loaded before we write it to the canvas
       img.addEventListener('load', function() {
         context.drawImage(img,col*SECTION_SIZE, row*SECTION_SIZE, SECTION_SIZE, SECTION_SIZE);
       }, false);
       img.src = color;
-      console.log(img);
       return;
     }
 
@@ -139,8 +159,6 @@ class DisplayCanvas extends React.Component {
     let startingColPix = col*SECTION_SIZE*4;
     
     const PIXELS_TO_DRAW = SECTION_SIZE * SECTION_SIZE;
-    // console.log(rgbColor);
-    // console.log(startingRowPix + startingColPix);
     const STARTING_PIX = startingRowPix + startingColPix;
 
     for (let pixId = STARTING_PIX, pixCount = 0; pixCount < PIXELS_TO_DRAW; ) {
@@ -162,6 +180,8 @@ class DisplayCanvas extends React.Component {
   }
 
   buildCanvas2 = () => {
+    var d = new Date();
+    var n = d.getTime();
     const { Canvas } = this.props.drizzleState.contracts;
 
     const sections = Canvas.getSections[this.state.sectionsArray];
@@ -196,6 +216,11 @@ class DisplayCanvas extends React.Component {
         this.colorImages(i, j, pix, SECTION_SIZE*SCALING_FACTOR, sections, sectionId, context);
       }
     }
+
+    var d2 = new Date();
+    var n2 = d2.getTime();
+    console.log("buildCanvas2 time");
+    console.log(n2-n);
   }
 
   getHtmlCanvas = () => {
@@ -209,11 +234,11 @@ class DisplayCanvas extends React.Component {
   render() {
     return (
       <div>
-        {/* <h2>Div based:</h2>
-        <div>{this.buildCanvas()}</div> */}
-        <h2>Canvas based:</h2>
+        <h2>Div based:</h2>
+        <div id="divCanvas" >{this.buildCanvas()}</div>
+        {/* <h2>Canvas based:</h2>
         {this.getHtmlCanvas()}
-        <div>{this.buildCanvas2()}</div>
+        <div>{this.buildCanvas2()}</div> */}
         
         <DisplaySectionDetails
           drizzle={this.props.drizzle}
