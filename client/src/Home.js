@@ -1,5 +1,4 @@
 import React from 'react';
-import BuySectionFree from "./BuySectionFree";
 import './style/Home.css';
 
 class Home extends React.Component {
@@ -32,13 +31,7 @@ class Home extends React.Component {
           <p>Free sections are going fast, but there are still some available! Claim yours now to make your mark.  </p>
 
         </div>
-
-
       </div>
-
-
-
-
     return result;
   }
 
@@ -48,22 +41,6 @@ render() {
         {this.header()}
       <div className="home content">
         {this.info()}
-        {/* <ReadSection
-          drizzle={this.props.drizzle}
-          drizzleState={this.props.drizzleState}
-        /> */}
-        {/* <DisplaySectionDetails
-          drizzle={this.props.drizzle}
-          drizzleState={this.props.drizzleState}
-        /> */}
-        <BuySectionFree
-          drizzle={this.props.drizzle}
-          drizzleState={this.props.drizzleState}
-        />
-        {/* <SetColor
-          drizzle={this.props.drizzle}
-          drizzleState={this.props.drizzleState}
-        /> */}
       </div>
       <div className="footer">Want to learn more? Check out our GitHub.</div>
      </div>

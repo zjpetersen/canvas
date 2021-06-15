@@ -2,12 +2,13 @@ import React from "react";
 import {Base64} from 'js-base64';
 import './style/SetColor.css';
 import './style/Alert.css';
+import './style/DisplayCanvas.css';
 
 class SetColor extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = { sectionId: '', color: '', stackId: null };
+    this.state = { sectionId: '', color: '', stackId: null, imageDisplayed: false };
     this.handleChangeSectionId = this.handleChangeSectionId.bind(this);
     this.handleChangeColor = this.handleChangeColor.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -15,6 +16,8 @@ class SetColor extends React.Component {
     this.updateColor = this.updateColor.bind(this);
     this.dataUrlFromInt8Array = this.dataUrlFromInt8Array.bind(this);
     this.bytesToHex = this.bytesToHex.bind(this);
+    this.setColor = this.setColor.bind(this);
+    this.readFile = this.readFile.bind(this);
     // this.bytesToBase64 = this.bytesToBase64.bind(this);
   }
 
@@ -31,7 +34,7 @@ class SetColor extends React.Component {
     const contract = drizzle.contracts.Canvas;
 
     let hex = this.bytesToHex(this.state.color);
-    const stackId = contract.methods["setColorBytes"].cacheSend(this.state.sectionId, hex, {
+    const stackId = contract.methods["setColorBytes"].cacheSend(this.props.sectionId, hex, {
       from: drizzleState.accounts[0]
     });
 
@@ -65,8 +68,9 @@ class SetColor extends React.Component {
     if (this.state.color === '') {
       return;
     }
-    let result = <div><p>Update color: </p>
-      <form onSubmit={this.handleSubmit}>
+    let result = <div className="center">
+      <button className="basic" type="button" onClick={() => this.handleSubmit()}>Update Color</button>
+      {/* <form onSubmit={this.handleSubmit}>
         <label> Section id:
                 <input
             name="sectionId"
@@ -76,7 +80,7 @@ class SetColor extends React.Component {
         </label>
         <br />
         <input type="submit" value="Submit" />
-      </form>
+      </form> */}
       <div>{this.getTxStatus()}</div>
       <br />
       <br />
@@ -127,6 +131,7 @@ class SetColor extends React.Component {
     }
     i.src = imgSrc;
     let picDiv = document.getElementById("pic");
+    console.log(picDiv);
     picDiv.appendChild(i);
     return;
 
@@ -136,20 +141,30 @@ class SetColor extends React.Component {
     e.preventDefault()
     const reader = new FileReader()
     const fileList = e.target.files;
+    //Catch error if trying to cancel when uploading a second file
+    if (!fileList || fileList.length === 0) {
+      return;
+    }
     console.log(fileList);
     reader.onload = async (e) => {
       const buffer = (e.target.result)
       let expectedColor = new Int8Array(buffer);
       this.setState({ color: expectedColor});
+    this.displayColor();
     };
     // reader.readAsDataURL(e.target.files[0])
+    console.log(e.target);
     let file = e.target.files[0];
     console.log(file);
     reader.readAsArrayBuffer(file);
 
   }
 
-  render() {
+  setColor() {
+    if (!this.props.owner || this.props.updatedColor || !this.props.drizzleState.accounts || this.props.owner !== this.props.drizzleState.accounts[0]) {
+      return;
+    }
+
     return (
       <div>
         <div>
@@ -158,11 +173,20 @@ class SetColor extends React.Component {
           <input type="file" id="file-selector" onChange={(e) => this.readFile(e)} />
         </div>
         <div id="pic">
-          {this.displayColor()}
+          {/* {this.displayColor()} */}
         </div>
         <div>
           {this.updateColor()}
         </div>
+      </div>
+    );
+
+  }
+
+  render() {
+    return (
+      <div>
+        {this.setColor()}
       </div>
     );
   }

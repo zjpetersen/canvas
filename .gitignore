@@ -1,5 +1,5 @@
 .idea/
-Notes.txt
+*.txt
 node_modules/
 client/src/contracts/
 client/README.md
