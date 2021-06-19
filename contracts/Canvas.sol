@@ -5,14 +5,20 @@ contract Canvas {
         address payable owner;
         string encodedColor;
         bytes colorBytes;
-        uint offer;
         uint ask;
         bool updatedColor;
-        address offerer;
         bool hasOwner;
     }
 
+    struct Offer {
+        address payable offerer;
+        uint amount;
+    }
+
     Section[100] public sections;
+    //key: sectionId, value: offers array
+    mapping(uint => Offer[]) offerMap;
+    // mapping(uint => mapping(address => uint)) offerMap;
     mapping(address => uint) pendingReturns;
     address public admin;
 
@@ -32,28 +38,34 @@ contract Canvas {
         setColor(10, "blue");
     }
 
-    function getOwner(uint regionId) public view returns (address) {
-        return getValidRegion(regionId).owner;
+    function getOwner(uint sectionId) public view returns (address) {
+        return getValidRegion(sectionId).owner;
     }
 
-    function getOffer(uint regionId) public view returns (uint) {
-        return getValidRegion(regionId).offer;
+    function getColor(uint sectionId) public view returns (string memory) {
+        return getValidRegion(sectionId).encodedColor;
     }
 
-    function getColor(uint regionId) public view returns (string memory) {
-        return getValidRegion(regionId).encodedColor;
+    function getColorBytes(uint sectionId) public view returns (bytes memory) {
+        return getValidRegion(sectionId).colorBytes;
     }
 
-    function getColorBytes(uint regionId) public view returns (bytes memory) {
-        return getValidRegion(regionId).colorBytes;
+    function getAsk(uint sectionId) public view returns (uint) {
+        return getValidRegion(sectionId).ask;
     }
 
-    function getSection(uint regionId) public view returns (Section memory) {
-        return getValidRegion(regionId);
+    function getSection(uint sectionId) public view returns (Section memory) {
+        return getValidRegion(sectionId);
     }
 
     function getSections() public view returns (Section[100] memory) {
         return sections;
+    }
+
+    function getOffersForSection(uint sectionId) public view returns (Offer[] memory) {
+        getValidRegion(sectionId);
+
+        return offerMap[sectionId];
     }
 
     function getSectionForFree(uint sectionId) public {
@@ -64,16 +76,41 @@ contract Canvas {
         section.hasOwner = true;
     }
 
-    function ask(uint regionId, uint askPrice) public {
-        Section storage section = getValidRegion(regionId);
+
+    //Trading functions
+    function ask(uint sectionId, uint amount) public {
+        Section storage section = getValidRegion(sectionId);
         require(isOwner(section));
 
-        section.ask = askPrice;
-        emit AskUpdated(regionId, msg.sender, askPrice);
+        Offer[] storage offers = offerMap[sectionId];
+        Offer memory highestOffer;
+        uint position;
+        for (uint i = 0; i < offers.length; i++) {
+            if (offers[i].amount >= amount && highestOffer.amount < amount) {
+                highestOffer = offers[i];
+            }
+            position = i;
+        }
+
+        if (highestOffer.amount >= amount) {
+            revert("There is already an offer at or above the ask price, use acceptOffer instead");
+        }
+
+        section.ask = amount;
+        emit AskUpdated(sectionId, msg.sender, amount);
     }
 
-    function acceptAsk(uint regionId) public payable {
-        Section storage section = getValidRegion(regionId);
+    function removeAsk(uint sectionId) public {
+        Section storage section = getValidRegion(sectionId);
+        require(isOwner(section));
+
+        section.ask = 0;
+        emit AskUpdated(sectionId, msg.sender, 0);
+    }
+
+    function acceptAsk(uint sectionId) public payable {
+        Section storage section = getValidRegion(sectionId);
+        require(!isOwner(section));
         if (section.ask == 0) {
             revert("There isn't an ask for this section");
         }
@@ -82,47 +119,132 @@ contract Canvas {
         }
 
         addPendingReturn(section);
-        address payable oldOwner = section.owner;
-        section.owner = payable(msg.sender);
-        section.updatedColor = false;
-        section.offer = 0;
-        section.ask = 0;
-        emit SectionPurchased(regionId, msg.sender, oldOwner, msg.value);
-
-        oldOwner.transfer(msg.value);
+        updateOwner(section, sectionId, msg.sender, msg.value);
     }
 
-    function setColor(uint regionId, string memory color) public {
-        Section storage section = getValidRegion(regionId);
+    function offer(uint sectionId) public payable {
+        Section storage section = getValidRegion(sectionId);
+        require(!isOwner(section));
+        if (section.ask != 0 && section.ask < msg.value) {
+            revert("There is already an ask lower than the offer, resend with the ask price");
+        } else if (section.ask != 0 && section.ask == msg.value) { //Accept the offer right away
+            // addPendingReturn(msg.value - section.ask);
+            updateOwner(section, sectionId, msg.sender, section.ask);
+        } else {
+            Offer[] storage offers = offerMap[sectionId];
+            // mapping(address => uint) storage offers = offerMap[sectionId];
+            // bool hadPrevOffer;
+            for (uint i = 0; i < offers.length; i++) {
+                if (offers[i].offerer == msg.sender) {
+                    // offers[i].amount = msg.value;
+                    // hadPrevOffer = true;
+                    revert("Cannot have multiple offers for the same section, if you want to submit a new offer first delete the old one.");
+                }
+            }
+
+            // if (!hadPrevOffer) {
+              Offer memory newOffer = Offer({offerer: payable(msg.sender), amount: msg.value});
+              offers.push(newOffer);
+            // }
+        }
+    }
+
+    function acceptOffer(uint sectionId, uint amount) public {
+        Section storage section = getValidRegion(sectionId);
+        require(isOwner(section));
+        Offer[] storage offers = offerMap[sectionId];
+        // mapping(address => uint) storage offers = offerMap[sectionId];
+        Offer memory winningOffer;
+        uint position;
+        for (uint i = 0; i < offers.length; i++) {
+            if (offers[i].amount >= amount && winningOffer.amount < amount) {
+                winningOffer = offers[i];
+            }
+            position = i;
+        }
+
+        if (winningOffer.offerer == address(0)) {
+            revert("There must be an offer equal to or higher than the specified amount");
+        }
+
+        offers[position]=offers[offers.length-1];
+        offers.pop();
+
+        addPendingReturn(section);
+        updateOwner(section, sectionId, winningOffer.offerer, winningOffer.amount);
+
+    } 
+
+    function removeOffer(uint sectionId) public {
+        Section storage section = getValidRegion(sectionId);
+        require(!isOwner(section));
+
+
+        Offer[] storage offers = offerMap[sectionId];
+        // mapping(address => uint) storage offers = offerMap[sectionId];
+        Offer memory offerToRemove;
+        uint position;
+        for (uint i = 0; i < offers.length; i++) {
+            if (offers[i].offerer == msg.sender) {
+              offerToRemove = offers[i];
+              position = i;
+            }
+        }
+
+        if (offerToRemove.offerer == address(0)) {
+            revert("There is no offer to remove");
+        }
+
+        uint amount = offerToRemove.amount;
+        offers[position]=offers[offers.length-1];
+        offers.pop();
+
+        payable(msg.sender).transfer(amount);
+    }
+
+    //End trading functions
+
+    function setColor(uint sectionId, string memory color) public {
+        Section storage section = getValidRegion(sectionId);
         require(isOwner(section));
         require(!section.updatedColor);
         //TODO validate color string
 
         section.encodedColor = color;
         section.updatedColor = true;
-        emit ColorUpdated(regionId, msg.sender, color);
+        emit ColorUpdated(sectionId, msg.sender, color);
     }
 
-    function setColorBytes(uint regionId, bytes memory color) public {
-        Section storage section = getValidRegion(regionId);
+    function setColorBytes(uint sectionId, bytes memory color) public {
+        Section storage section = getValidRegion(sectionId);
         require(isOwner(section));
         require(!section.updatedColor);
         //TODO validate color string
 
         section.colorBytes = color;
         section.updatedColor = true;
-        emit ColorBytesUpdated(regionId, msg.sender, color);
+        emit ColorBytesUpdated(sectionId, msg.sender, color);
     }
 
-    function getValidRegion(uint regionId) private view returns (Section storage) {
-        require(regionId >= 0 && regionId < 100);
-        return sections[regionId];
+    function updateOwner(Section storage section, uint sectionId, address newOwner, uint amount) private {
+        address payable oldOwner = section.owner;
+        section.owner = payable(newOwner);
+        section.updatedColor = false;
+        section.ask = 0;
+        emit SectionPurchased(sectionId, msg.sender, oldOwner, amount);
+
+        oldOwner.transfer(amount);
+    }
+
+    function getValidRegion(uint sectionId) private view returns (Section storage) {
+        require(sectionId >= 0 && sectionId < 100);
+        return sections[sectionId];
     }
 
     function addPendingReturn(Section memory section) private {
-        if (section.offerer != address(0)) {
-            pendingReturns[section.offerer] += section.offer;
-        }
+        // if (section.offerer != address(0)) {
+        //     pendingReturns[section.offerer] += section.offer;
+        // }
 
     }
 
@@ -131,8 +253,6 @@ contract Canvas {
             return true;
         }
         return false;
-        
-
     }
 
 
