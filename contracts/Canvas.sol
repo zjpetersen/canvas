@@ -3,7 +3,6 @@ pragma solidity ^0.8.4;
 contract Canvas {
     struct Section {
         address payable owner;
-        string encodedColor;
         bytes colorBytes;
         uint ask;
         bool updatedColor;
@@ -32,18 +31,10 @@ contract Canvas {
 
     constructor() {
         admin = msg.sender;
-
-        //TODO delete these methods used for testing
-        getSectionForFree(10);
-        setColor(10, "blue");
     }
 
     function getOwner(uint sectionId) public view returns (address) {
         return getValidRegion(sectionId).owner;
-    }
-
-    function getColor(uint sectionId) public view returns (string memory) {
-        return getValidRegion(sectionId).encodedColor;
     }
 
     function getColorBytes(uint sectionId) public view returns (bytes memory) {
@@ -157,10 +148,10 @@ contract Canvas {
         Offer memory winningOffer;
         uint position;
         for (uint i = 0; i < offers.length; i++) {
-            if (offers[i].amount >= amount && winningOffer.amount < amount) {
+            if (offers[i].amount >= amount && winningOffer.amount < offers[i].amount) {
                 winningOffer = offers[i];
+                position = i;
             }
-            position = i;
         }
 
         if (winningOffer.offerer == address(0)) {
@@ -204,17 +195,6 @@ contract Canvas {
 
     //End trading functions
 
-    function setColor(uint sectionId, string memory color) public {
-        Section storage section = getValidRegion(sectionId);
-        require(isOwner(section));
-        require(!section.updatedColor);
-        //TODO validate color string
-
-        section.encodedColor = color;
-        section.updatedColor = true;
-        emit ColorUpdated(sectionId, msg.sender, color);
-    }
-
     function setColorBytes(uint sectionId, bytes memory color) public {
         Section storage section = getValidRegion(sectionId);
         require(isOwner(section));
@@ -245,7 +225,6 @@ contract Canvas {
         // if (section.offerer != address(0)) {
         //     pendingReturns[section.offerer] += section.offer;
         // }
-
     }
 
     function isOwner(Section memory section) private view returns (bool) {

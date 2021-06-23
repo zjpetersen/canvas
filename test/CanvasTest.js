@@ -57,35 +57,12 @@ contract("Canvas", (accounts) => {
 
  });
 
- 
- describe("test setting color", async () => {
-  let expectedColor = "blue";
-
-   it("cannot set color for non-owner", async () => {
-     await truffleAssert.reverts(
-       canvas.setColor(sectionId, expectedColor, { from: accounts[1] }));
-   });
-
-   it("can set color for owner", async () => {
-     await canvas.setColor(sectionId, expectedColor, {from: accounts[0]});
-     const color = await canvas.getColor(sectionId);
-
-     assert.equal(color, expectedColor, "Color should be set");
-   });
-
-   it("cannot set color a second time", async () => {
-     await truffleAssert.reverts(
-       canvas.setColor(sectionId, "red", { from: accounts[0] }));
-   });
-
- });
-
  describe("test get all sections", async () => {
    it("can get all sections", async () => {
      const sections = await canvas.getSections({from :accounts[0]});
      const section = sections[sectionId];
 
-     assert.equal(section.encodedColor, "blue", "Should be able to get color from sections");
+     assert.equal(section.owner, accounts[0]);
    });
 
  });
@@ -228,6 +205,7 @@ contract("Canvas", (accounts) => {
  describe("test offers", async () => {
    const OFFER_PRICE_1 = "500000000000000000"; //.5 ether
    const OFFER_PRICE_2 = "3000000000000000000"; //3 ether
+   const OFFER_PRICE_3 = "100000000000000000"; //.1 ether
    const OFFER_PRICE_NEG = -3;
 
    //Happy path
@@ -266,74 +244,100 @@ contract("Canvas", (accounts) => {
 
      assert.equal(offers.length, 0, "Offer should be removed");
      //Checks the first few digits of the account balance is the same.  Due to gas prices won't be an exact match
-     assert.equal(startingBalance.add(offerPrice).toString().substring(0,4), endingBalance.toString().substring(0,4));
+     assert.equal(startingBalance.add(offerPrice).toString().substring(0,3), endingBalance.toString().substring(0,3));
+
    });
 
-   //TODO more test cases for offers
+   //Account 0 accepts offer and new owner is account 1
+   it("can accept an offer", async () => {
+     let startingBalance = web3.utils.toBN(await web3.eth.getBalance(accounts[0]));
 
-  //  it("can accept an ask", async () => {
-  //    await canvas.acceptAsk(sectionId1, {from: accounts[0], value: ASK_PRICE_1});
-  //    let ask = await canvas.getAsk(sectionId1);
-  //    let owner = await canvas.getOwner(sectionId1);
+     await canvas.acceptOffer(sectionId1, OFFER_PRICE_1, {from: accounts[0]});
+     let offers = await canvas.getOffersForSection(sectionId1);
+     let owner = await canvas.getOwner(sectionId1);
+     let endingBalance = web3.utils.toBN(await web3.eth.getBalance(accounts[0]));
+     let offerPrice = web3.utils.toBN(OFFER_PRICE_1);
 
-  //    assert.equal(ask, 0, "Ask should be 0");
-  //    assert.equal(owner, accounts[0], "Ask price should be set correctly");
+     assert.equal(owner, accounts[1], "Owner should be set correctly");
+     assert.equal(offers.length, 0, "Offer should be removed");
+     assert.equal(startingBalance.add(offerPrice).toString().substring(0,3), endingBalance.toString().substring(0,3));
 
-  //    await canvas.ask(sectionId1, ASK_PRICE_1, {from: accounts[0]});
-  //  });
+     await canvas.offer(sectionId1, {from: accounts[0], value: OFFER_PRICE_1});
+   });
 
-  //  //Error cases
-  //  it("cannot create or update an ask for non-owner", async () => {
-  //    await truffleAssert.reverts(
-  //      canvas.ask(sectionId1, ASK_PRICE_1, {from: accounts[1]})
-  //    );
-  //  });
+   it("can accept the highest offer", async () => {
+     await canvas.offer(sectionId, {from: accounts[2], value: OFFER_PRICE_1});
+     await canvas.offer(sectionId, {from: accounts[1], value: OFFER_PRICE_2});
+     await canvas.offer(sectionId, {from: accounts[3], value: OFFER_PRICE_3});
+     let startingBalance = web3.utils.toBN(await web3.eth.getBalance(accounts[0]));
 
-  //  it("cannot delete an ask for non-owner", async () => {
-  //    await truffleAssert.reverts(
-  //      canvas.removeAsk(sectionId, {from: accounts[1]})
-  //    );
-  //  });
+     await canvas.acceptOffer(sectionId, OFFER_PRICE_1, {from: accounts[0]}); //Even though we're using a lower price, still take the highest (offer 2)
+     let offers = await canvas.getOffersForSection(sectionId);
+     let owner = await canvas.getOwner(sectionId);
+     let endingBalance = web3.utils.toBN(await web3.eth.getBalance(accounts[0]));
+     let offerPrice = web3.utils.toBN(OFFER_PRICE_2);
 
-  //  it("cannot accept your own ask", async () => {
-  //    await truffleAssert.reverts(
-  //      canvas.acceptAsk(sectionId1, {from: accounts[0], value: ASK_PRICE_1})
-  //    );
-  //  });
+    //  console.log(startingBalance.toString());
+    //  console.log(endingBalance.toString());
+     assert.equal(owner, accounts[1], "Owner should be set correctly");
+     assert.equal(offers.length, 2, "Offer should be removed");
+     assert.equal(offers[0].amount, OFFER_PRICE_1, "First offer is now .5 ether");
+     assert.equal(offers[1].amount, OFFER_PRICE_3, "Second offer is now .1 ether");
+     assert.equal(offers[0].offerer, accounts[2], "Offerer should be set correctly1");
+     assert.equal(offers[1].offerer, accounts[3], "Offerer should be set correctly2");
+     assert.equal(startingBalance.add(offerPrice).toString().substring(0,3), endingBalance.toString().substring(0,3));
+   });
 
-  //  it("cannot accept ask with incorrect funds", async () => {
-  //    await truffleAssert.reverts(
-  //      canvas.acceptAsk(sectionId1, {from: accounts[1], value: "10000"})
-  //    );
+   //Error cases
+   it("cannot create an offer for owner", async () => {
+     await truffleAssert.reverts(
+       canvas.offer(sectionId1, {from: accounts[1], value: OFFER_PRICE_1})
+     );
+   });
 
-  //    await truffleAssert.reverts(
-  //      canvas.acceptAsk(sectionId1, {from: accounts[1], value: ASK_PRICE_2})
-  //    );
-  //  });
+   it("cannot delete an offer for non-owner", async () => {
+     await truffleAssert.reverts(
+       canvas.removeOffer(sectionId1, {from: accounts[2]})
+     );
+   });
 
-  //  it("cannot accept when no ask", async () => {
-  //    await truffleAssert.reverts(
-  //      canvas.acceptAsk(sectionId, {from: accounts[1], value: 0})
-  //    );
-  //  });
+   it("cannot accept offer as non-owner", async () => {
+     await truffleAssert.reverts(
+       canvas.acceptOffer(sectionId1, OFFER_PRICE_1, {from: accounts[0]})
+     );
+   });
 
-  //  it("Out of bounds check - ask", async () => {
-  //    await truffleAssert.reverts(
-  //      canvas.ask(SECTION_ID_INVALID, ASK_PRICE_1, {from: accounts[0]})
-  //    );
-  //  });
+   it("cannot accept ask if too high a price", async () => {
+     await truffleAssert.reverts(
+       canvas.acceptOffer(sectionId1, OFFER_PRICE_2, {from: accounts[1]})
+     );
+   });
 
-  //  it("Out of bounds check - removeAsk", async () => {
-  //    await truffleAssert.reverts(
-  //      canvas.removeAsk(SECTION_ID_INVALID, {from: accounts[0]})
-  //    );
-  //  });
+   it("cannot accept when no offer", async () => {
+     await canvas.removeOffer(sectionId1, {from: accounts[0]});
 
-  //  it("Out of bounds check - acceptAsk", async () => {
-  //    await truffleAssert.reverts(
-  //      canvas.acceptAsk(SECTION_ID_INVALID, {from: accounts[0]})
-  //    );
-  //  });
+     await truffleAssert.reverts(
+       canvas.acceptOffer(sectionId1, 10, {from: accounts[1]})
+     );
+   });
+
+   it("Out of bounds check - offer", async () => {
+     await truffleAssert.reverts(
+       canvas.offer(SECTION_ID_INVALID, {from: accounts[0], value: OFFER_PRICE_1})
+     );
+   });
+
+   it("Out of bounds check - removeOffer", async () => {
+     await truffleAssert.reverts(
+       canvas.removeOffer(SECTION_ID_INVALID, {from: accounts[0]})
+     );
+   });
+
+   it("Out of bounds check - acceptOffer", async () => {
+     await truffleAssert.reverts(
+       canvas.acceptOffer(SECTION_ID_INVALID, OFFER_PRICE_1, {from: accounts[0]})
+     );
+   });
 
  });
 
