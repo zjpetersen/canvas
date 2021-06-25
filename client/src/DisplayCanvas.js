@@ -83,19 +83,17 @@ class DisplayCanvas extends React.Component {
         break;
       }
       let section = sections[i];
-      let styleImg = {
-        float: "left",
-      }
       let imgSrc = section.colorBytes;
       if (imgSrc.startsWith('0x') && imgSrc.length > 2) {
         imgSrc = this.convertToDataUrl(imgSrc);
       }
       if (imgSrc.startsWith("data:image")) {
-        let image = <img src={imgSrc} style={styleImg} alt="Section"/>
+        let image = <img id="canvasImg" src={imgSrc} alt="Section"/>
         row.push(<div id="canvasElement" key={i} onClick={() => this.setCurrentSection(i)}>{image}</div>);
       } else {
         let style = {
-          backgroundColor: this.getColor(section, i)
+          backgroundColor: this.getColor(section, i),
+          // border: "1px solid #383838"
         }
         row.push(<div id="canvasElement" key={i} style={style} onClick={() => this.setCurrentSection(i)} />);
       }
@@ -263,8 +261,8 @@ class DisplayCanvas extends React.Component {
 
   render() {
     return (
-      <div>
-        <h2>Div based:</h2>
+      <div id="center">
+        <h2>Canvas</h2>
         <div id="divCanvas" >{this.buildCanvas()}</div>
         {/* <h2>Canvas based:</h2>
         {this.getHtmlCanvas()}
