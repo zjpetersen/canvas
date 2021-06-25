@@ -14,7 +14,7 @@ contract Canvas {
         uint amount;
     }
 
-    Section[100] public sections;
+    Section[7056] public sections;
     //key: sectionId, value: offers array
     mapping(uint => Offer[]) offerMap;
     // mapping(uint => mapping(address => uint)) offerMap;
@@ -49,8 +49,21 @@ contract Canvas {
         return getValidRegion(sectionId);
     }
 
-    function getSections() public view returns (Section[100] memory) {
+    function getSections() public view returns (Section[7056] memory) {
         return sections;
+    }
+
+    function fetchSections(uint cursor, uint length) public view returns (Section[] memory values) {
+        if (length > sections.length - cursor) {
+            length = sections.length - cursor;
+        }
+
+        values = new Section[](length);
+        for (uint i =0; i < length; i++) {
+             values[i] = sections[cursor + i];
+        }
+
+        return values;
     }
 
     function getOffersForSection(uint sectionId) public view returns (Offer[] memory) {
@@ -217,7 +230,7 @@ contract Canvas {
     }
 
     function getValidRegion(uint sectionId) private view returns (Section storage) {
-        require(sectionId >= 0 && sectionId < 100);
+        require(sectionId >= 0 && sectionId < 7056);
         return sections[sectionId];
     }
 

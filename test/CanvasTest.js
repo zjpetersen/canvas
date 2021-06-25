@@ -59,9 +59,29 @@ contract("Canvas", (accounts) => {
 
  describe("test get all sections", async () => {
    it("can get all sections", async () => {
-     const sections = await canvas.getSections({from :accounts[0]});
-     const section = sections[sectionId];
+    //  const sections = await canvas.getSections({from :accounts[0]});
 
+    const ARR_LEN = 7056;
+    const PAGES = 28;
+    const LENGTH = ARR_LEN / PAGES;
+
+    let result = [];
+    let cursor = 0;
+
+    for (let i = 0; i < PAGES; i++) {
+      // console.log("iterating");
+
+      let x = await canvas.fetchSections(cursor, LENGTH);
+      result = result.concat(x);
+      cursor += LENGTH;
+
+      // console.log("result length: " + result.length);
+      // console.log("cursor:" + cursor);
+    }
+     const section = result[sectionId];
+
+
+     assert.equal(result.length, 7056);
      assert.equal(section.owner, accounts[0]);
    });
 

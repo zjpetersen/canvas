@@ -20,23 +20,22 @@ class DisplaySectionDetails extends React.Component {
         <div>
           <div className="center">
             <p>Section details</p>
-            <p>Owner: {section && section.value.owner}</p>
-            <p>Color: {section && section.value.encodedColor}</p>
-            <p>Color Bytes: {section && section.value.colorBytes}</p>
-            <p>Offer: {section && section.value.offer}</p>
+            <p>Owner: {section && section.value && section.value.owner}</p>
+            <p>Color Bytes: {section && section.value && section.value.colorBytes}</p>
+            <p>Offer: {section && section.value && section.value.offer}</p>
           </div>
           <GetUnclaimedSection
             drizzle={this.props.drizzle}
             drizzleState={this.props.drizzleState}
             sectionId={this.props.sectionId}
-            owner={section && section.value.owner}
+            owner={section && section.value && section.value.owner}
           />
           <SetColor
             drizzle={this.props.drizzle}
             drizzleState={this.props.drizzleState}
             sectionId={this.props.sectionId}
-            owner={section && section.value.owner}
-            updatedColor={section && section.value.updatedColor}
+            owner={section && section.value && section.value.owner}
+            updatedColor={section && section.value && section.value.updatedColor}
           />
 
         </div>

@@ -19,6 +19,34 @@ div#divCanvas {
   margin: 10px;
 }
 
+div#canvasRow {
+      clear: both;
+      content: "";
+      /* display: block; */
+      white-space: nowrap;
+      line-height: 0px;
+      /* display: table; */
+      /* overflow: auto; */
+      /* white-space: nowrap; */
+      /* overflow-x: scroll; */
+      /* overflow-y: hidden; */
+
+      /* vertical-align: top; */
+      /* margin: 0; */
+      /* padding: 0; */
+}
+
+div#canvasElement {
+        height: 32px;
+        width: 32px;
+        /* float: left; */
+        border: 1px solid #383838;
+        /* overflow: auto; */
+        /* white-space: nowrap; */
+        display: inline-block;
+
+ }
+
 button.basic {
   background-color: #9e5ba4;
   border: none;

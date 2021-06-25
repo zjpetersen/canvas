@@ -5,10 +5,12 @@ import {Base64} from 'js-base64';
 
 const WIDTH = 160;
 const HEIGHT = 160;
-const ROW_SIZE = 10;
-const COLUMN_SIZE = 10;
+const ROW_SIZE = 112; 
+const COLUMN_SIZE = 63; 
 const SECTION_SIZE = 16;
 const SCALING_FACTOR = 1;
+const ARR_LEN = ROW_SIZE * COLUMN_SIZE;
+const PAGES = 56;
 
 
 class DisplayCanvas extends React.Component {
@@ -19,12 +21,28 @@ class DisplayCanvas extends React.Component {
     this.setCurrentSection = this.setCurrentSection.bind(this);
     this.convertToDataUrl = this.convertToDataUrl.bind(this);
     this.getColor = this.getColor.bind(this);
+    this.fetchSections = this.fetchSections.bind(this);
+
   }
 
   componentDidMount() {
-    const canvasRef = this.props.drizzle.contracts.Canvas;
-    const sectionsArray = canvasRef.methods["getSections"].cacheCall();
+    const sectionsArray = this.fetchSections();
     this.setState({sectionsArray: sectionsArray});
+  }
+
+  fetchSections() {
+    const canvasRef = this.props.drizzle.contracts.Canvas;
+    const LENGTH = ARR_LEN / PAGES;
+
+    let result = [];
+    let cursor = 0;
+
+    for (let i = 0; i < PAGES; i++) {
+      let x = canvasRef.methods["fetchSections"].cacheCall(cursor, LENGTH);
+      result = result.concat(x);
+      cursor += LENGTH;
+    }
+    return result;
   }
 
   setCurrentSection(i) {
@@ -45,26 +63,26 @@ class DisplayCanvas extends React.Component {
     } : null;
   }
 
-  getColor(section) {
+  getColor(section, i) {
       if (section.owner !== "0x0000000000000000000000000000000000000000") {
         return "#7d7d7d";
       } else {
+        if (i % 10 == 0) {
+          return "#8b658f";
+        }
         return "#f2eac9";
       }
   }
 
   buildRow = (sections, start, end, ROW_SIZE) => {
+    let x = start / ROW_SIZE;
+    console.log("building row: " + x);
     let row = [];
     for (let i = start; i < end; i++) {
-      if (sections.value.length === i) {
+      if (sections.length === i) {
         break;
       }
-      let section = sections.value[i];
-      let style = {
-        height: "64px",
-        width: "64px",
-        float: "left"
-      };
+      let section = sections[i];
       let styleImg = {
         float: "left",
       }
@@ -74,20 +92,17 @@ class DisplayCanvas extends React.Component {
       }
       if (imgSrc.startsWith("data:image")) {
         let image = <img src={imgSrc} style={styleImg} alt="Section"/>
-        row.push(<div key={i} style={style} onClick={() => this.setCurrentSection(i)}>{image}</div>);
+        row.push(<div id="canvasElement" key={i} onClick={() => this.setCurrentSection(i)}>{image}</div>);
       } else {
-        style["backgroundColor"] = this.getColor(section);
-        row.push(<div key={i} style={style} onClick={() => this.setCurrentSection(i)} />);
+        let style = {
+          backgroundColor: this.getColor(section, i)
+        }
+        row.push(<div id="canvasElement" key={i} style={style} onClick={() => this.setCurrentSection(i)} />);
       }
 
     }
-    const styleRow = {
-      clear: "both",
-      content: "",
-      display: "table",
-    };
     let rowId = "row" + (start / ROW_SIZE);
-    return <div key={rowId} style={styleRow}>{row}<br></br></div>;
+    return <div id="canvasRow" key={rowId} >{row}</div>;
 
   }
 
@@ -96,13 +111,20 @@ class DisplayCanvas extends React.Component {
     // var n = d.getTime();
 
     const { Canvas } = this.props.drizzleState.contracts;
-
-    const sections = Canvas.getSections[this.state.sectionsArray];
+    if (!this.state.sectionsArray) {
+      return;
+    }
+    let sections = [];
+    for (let i = 0; i < PAGES; i++) {
+      let x = Canvas.fetchSections[this.state.sectionsArray[i]];
+      if (!x) { return; }
+      sections = sections.concat(x.value);
+    }
     if (!sections) { return;}
 
     let result = [];
     //Naive for loop, look to clean this up
-    for (let i = 0; i < sections.value.length; i+=ROW_SIZE) {
+    for (let i = 0; i < sections.length; i+=ROW_SIZE) {
         result.push(this.buildRow(sections, i, i+ROW_SIZE, ROW_SIZE));
     }
 
