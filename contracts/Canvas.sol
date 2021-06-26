@@ -17,6 +17,8 @@ contract Canvas {
     Section[7056] public sections;
     //key: sectionId, value: offers array
     mapping(uint => Offer[]) offerMap;
+    //offers for any section
+    // Offer[] globalOffers;
     // mapping(uint => mapping(address => uint)) offerMap;
     mapping(address => uint) pendingReturns;
     address public admin;
@@ -85,23 +87,26 @@ contract Canvas {
     function ask(uint sectionId, uint amount) public {
         Section storage section = getValidRegion(sectionId);
         require(isOwner(section));
+        require(amount > 1000); //Sanity check, amount needs to be in wei
 
         Offer[] storage offers = offerMap[sectionId];
         Offer memory highestOffer;
         uint position;
         for (uint i = 0; i < offers.length; i++) {
-            if (offers[i].amount >= amount && highestOffer.amount < amount) {
+            if (offers[i].amount >= amount && highestOffer.amount < offers[i].amount) {
                 highestOffer = offers[i];
+                position = i;
             }
-            position = i;
         }
 
         if (highestOffer.amount >= amount) {
-            revert("There is already an offer at or above the ask price, use acceptOffer instead");
+          offers[position]=offers[offers.length-1];
+          offers.pop();
+          updateOwner(section, sectionId, highestOffer.offerer, highestOffer.amount);
+        } else {
+          section.ask = amount;
+          emit AskUpdated(sectionId, msg.sender, amount);
         }
-
-        section.ask = amount;
-        emit AskUpdated(sectionId, msg.sender, amount);
     }
 
     function removeAsk(uint sectionId) public {
@@ -110,20 +115,6 @@ contract Canvas {
 
         section.ask = 0;
         emit AskUpdated(sectionId, msg.sender, 0);
-    }
-
-    function acceptAsk(uint sectionId) public payable {
-        Section storage section = getValidRegion(sectionId);
-        require(!isOwner(section));
-        if (section.ask == 0) {
-            revert("There isn't an ask for this section");
-        }
-        if (msg.value != section.ask) {
-            revert("Value does not match ask");
-        }
-
-        addPendingReturn(section);
-        updateOwner(section, sectionId, msg.sender, msg.value);
     }
 
     function offer(uint sectionId) public payable {
@@ -153,31 +144,9 @@ contract Canvas {
         }
     }
 
-    function acceptOffer(uint sectionId, uint amount) public {
-        Section storage section = getValidRegion(sectionId);
-        require(isOwner(section));
-        Offer[] storage offers = offerMap[sectionId];
-        // mapping(address => uint) storage offers = offerMap[sectionId];
-        Offer memory winningOffer;
-        uint position;
-        for (uint i = 0; i < offers.length; i++) {
-            if (offers[i].amount >= amount && winningOffer.amount < offers[i].amount) {
-                winningOffer = offers[i];
-                position = i;
-            }
-        }
-
-        if (winningOffer.offerer == address(0)) {
-            revert("There must be an offer equal to or higher than the specified amount");
-        }
-
-        offers[position]=offers[offers.length-1];
-        offers.pop();
-
-        addPendingReturn(section);
-        updateOwner(section, sectionId, winningOffer.offerer, winningOffer.amount);
-
-    } 
+    //TODO create global offers
+    // function offer() public payable {
+    // }
 
     function removeOffer(uint sectionId) public {
         Section storage section = getValidRegion(sectionId);
@@ -224,7 +193,7 @@ contract Canvas {
         section.owner = payable(newOwner);
         section.updatedColor = false;
         section.ask = 0;
-        emit SectionPurchased(sectionId, msg.sender, oldOwner, amount);
+        emit SectionPurchased(sectionId, newOwner, oldOwner, amount);
 
         oldOwner.transfer(amount);
     }
