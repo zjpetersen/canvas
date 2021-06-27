@@ -6,10 +6,8 @@ class DisplaySectionDetails extends React.Component {
   state = { section: null, sectionId: null, canvas: null};
 
   getSectionDetails = () => {
-    if (!this.props.currentSection || !this.props.sectionId) {return (<div>
-      <p>No section selected</p>
-      </div>
-      );
+    if (!this.props.currentSection || !this.props.sectionId) {
+      return;
     }
 
     const { Canvas } = this.props.drizzleState.contracts;

@@ -28,8 +28,6 @@ contract Canvas {
     event ColorUpdated(uint sectionId, address owner, string updatedColor);
     event ColorBytesUpdated(uint sectionId, address owner, bytes updatedColor);
 
-    /// The region id must be 0-99
-    error InvalidRegion();
 
     constructor() {
         admin = msg.sender;
@@ -49,10 +47,6 @@ contract Canvas {
 
     function getSection(uint sectionId) public view returns (Section memory) {
         return getValidRegion(sectionId);
-    }
-
-    function getSections() public view returns (Section[7056] memory) {
-        return sections;
     }
 
     function fetchSections(uint cursor, uint length) public view returns (Section[] memory values) {
@@ -201,12 +195,6 @@ contract Canvas {
     function getValidRegion(uint sectionId) private view returns (Section storage) {
         require(sectionId >= 0 && sectionId < 7056);
         return sections[sectionId];
-    }
-
-    function addPendingReturn(Section memory section) private {
-        // if (section.offerer != address(0)) {
-        //     pendingReturns[section.offerer] += section.offer;
-        // }
     }
 
     function isOwner(Section memory section) private view returns (bool) {

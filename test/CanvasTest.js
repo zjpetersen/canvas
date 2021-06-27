@@ -64,6 +64,18 @@ contract("Canvas", (accounts) => {
 
  });
 
+ describe("test get section", async () => {
+   it("can get owner", async () => {
+     const section = await canvas.getSection(sectionId1, {from :accounts[0]});
+     
+     assert.equal(section.owner, accounts[1], "Can access properties correctly");
+     assert.equal(section.hasOwner, true, "Can access properties correctly2");
+     assert.equal(section.ask, 0, "Can access properties correctly2");
+     assert.equal(section.updatedColor, false, "Can access properties correctly2");
+   });
+
+ });
+
 
  describe("test setting color bytes", async () => {
    let buffer = new ArrayBuffer();
@@ -204,7 +216,7 @@ contract("Canvas", (accounts) => {
 
    it("cannot ask for low value (safety check)", async () => {
      await truffleAssert.reverts(
-       canvas.ask(sectionId, 100, {from: accounts[1]})
+       canvas.ask(sectionId, "100", {from: accounts[1]})
      );
    });
 
@@ -324,8 +336,8 @@ contract("Canvas", (accounts) => {
 
  });
 
- describe("test get all sections", async () => {
-   it("can get all sections", async () => {
+ describe("test fetching sections", async () => {
+   it("can fetch sections", async () => {
     //  const sections = await canvas.getSections({from :accounts[0]});
 
     const ARR_LEN = 7056;
@@ -350,6 +362,21 @@ contract("Canvas", (accounts) => {
 
      assert.equal(result.length, 7056);
      assert.equal(section.owner, accounts[0]);
+   });
+
+   it("can fetch sections when length is too big", async () => {
+    //  const sections = await canvas.getSections({from :accounts[0]});
+
+    const ARR_LEN = 7056;
+    const LENGTH = 100;
+
+    let result = [];
+    let cursor = ARR_LEN - 50;
+
+    let x = await canvas.fetchSections(cursor, LENGTH);
+    result = result.concat(x);
+
+    assert.equal(result.length, 50);
    });
 
  });

@@ -2,6 +2,7 @@ import React from "react";
 import DisplaySectionDetails from './DisplaySectionDetails';
 import './style/DisplayCanvas.css';
 import {Base64} from 'js-base64';
+import loadingGif from './media/Spinner-1s-200px.gif';
 
 const WIDTH = 160;
 const HEIGHT = 160;
@@ -22,6 +23,7 @@ class DisplayCanvas extends React.Component {
     this.convertToDataUrl = this.convertToDataUrl.bind(this);
     this.getColor = this.getColor.bind(this);
     this.fetchSections = this.fetchSections.bind(this);
+    this.loading = this.loading.bind(this);
 
   }
 
@@ -67,7 +69,7 @@ class DisplayCanvas extends React.Component {
       if (section.owner !== "0x0000000000000000000000000000000000000000") {
         return "#7d7d7d";
       } else {
-        if (i % 10 == 0) {
+        if (i % 10 === 0) {
           return "#8b658f";
         }
         return "#f2eac9";
@@ -76,7 +78,7 @@ class DisplayCanvas extends React.Component {
 
   buildRow = (sections, start, end, ROW_SIZE) => {
     let x = start / ROW_SIZE;
-    console.log("building row: " + x);
+    // console.log("building row: " + x);
     let row = [];
     for (let i = start; i < end; i++) {
       if (sections.length === i) {
@@ -103,6 +105,13 @@ class DisplayCanvas extends React.Component {
     return <div id="canvasRow" key={rowId} >{row}</div>;
 
   }
+  
+  loading = () => {
+      return <div id="loading">
+        <p>Loading the canvas...this will take a bit.</p>
+        <img id="loading" src={loadingGif} alt="Loading"/>
+      </div>;
+  }
 
   buildCanvas = () => {
     // var d = new Date();
@@ -110,15 +119,19 @@ class DisplayCanvas extends React.Component {
 
     const { Canvas } = this.props.drizzleState.contracts;
     if (!this.state.sectionsArray) {
-      return;
+      return this.loading();
     }
     let sections = [];
     for (let i = 0; i < PAGES; i++) {
       let x = Canvas.fetchSections[this.state.sectionsArray[i]];
-      if (!x) { return; }
+      if (!x) { 
+        return this.loading();
+      }
       sections = sections.concat(x.value);
     }
-    if (!sections) { return;}
+    if (!sections) { 
+      return this.loading();
+    }
 
     let result = [];
     //Naive for loop, look to clean this up
@@ -130,8 +143,8 @@ class DisplayCanvas extends React.Component {
     // var n2 = d2.getTime();
     // console.log("buildCanvas time");
     // console.log(n2-n);
-
-    return result;
+  
+    return <div id="divCanvas">{result}</div>;
   }
 
   convertToDataUrl(color) {
@@ -263,7 +276,8 @@ class DisplayCanvas extends React.Component {
     return (
       <div id="center">
         <h2>Canvas</h2>
-        <div id="divCanvas" >{this.buildCanvas()}</div>
+        {/* <div id="divCanvas" >{this.buildCanvas()}</div> */}
+        {this.buildCanvas()}
         {/* <h2>Canvas based:</h2>
         {this.getHtmlCanvas()}
         <div>{this.buildCanvas2()}</div> */}
