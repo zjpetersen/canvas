@@ -3,6 +3,7 @@ import DisplaySectionDetails from './DisplaySectionDetails';
 import './style/DisplayCanvas.css';
 import {Base64} from 'js-base64';
 import loadingGif from './media/Spinner-1s-200px.gif';
+import {convertToDataUrl} from './Utils';
 
 const WIDTH = 160;
 const HEIGHT = 160;
@@ -18,9 +19,8 @@ class DisplayCanvas extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = { sectionsArray: null, sections: null, canvas: null, currentSection: null, currentSectionId: null};
+    this.state = { sectionsArray: null, sections: null, canvas: null, currentSection: null, currentSectionId: null, sectionOffers: null};
     this.setCurrentSection = this.setCurrentSection.bind(this);
-    this.convertToDataUrl = this.convertToDataUrl.bind(this);
     this.getColor = this.getColor.bind(this);
     this.fetchSections = this.fetchSections.bind(this);
     this.loading = this.loading.bind(this);
@@ -53,7 +53,8 @@ class DisplayCanvas extends React.Component {
 
     // let drizzle know we want to call the `checkSection` method with `value`
     const section = canvas.methods["getSection"].cacheCall(i);
-    this.setState({ currentSection: section, currentSectionId : i});
+    const offerRef = canvas.methods["getOffersForSection"].cacheCall(i);
+    this.setState({ currentSection: section, currentSectionId : i, sectionOffers: offerRef});
   }
 
   hexToRgb(hex) {
@@ -87,7 +88,7 @@ class DisplayCanvas extends React.Component {
       let section = sections[i];
       let imgSrc = section.colorBytes;
       if (imgSrc.startsWith('0x') && imgSrc.length > 2) {
-        imgSrc = this.convertToDataUrl(imgSrc);
+        imgSrc = convertToDataUrl(imgSrc);
       }
       if (imgSrc.startsWith("data:image")) {
         let image = <img id="canvasImg" src={imgSrc} alt="Section"/>
@@ -147,23 +148,11 @@ class DisplayCanvas extends React.Component {
     return <div id="divCanvas">{result}</div>;
   }
 
-  convertToDataUrl(color) {
-    color = color.substr(2, color.length);
-    let bytes = [];
-    for (let c = 0; c < color.length; c += 2) {
-      bytes.push(parseInt(color.substr(c, 2), 16));
-    }
-    let int8arr = Uint8Array.from(bytes);
-    color = 'data:image/png;base64,';
-    color += Base64.fromUint8Array(int8arr);
-    return color;
-  }
-
   colorImages = (row, col, pix, SECTION_SIZE, sections, sectionId, context) => {
     let section = sections.value[sectionId];
     let color = section.colorBytes;
     if (color.startsWith('0x') && color.length > 2) {
-      color = this.convertToDataUrl(color);
+      color = convertToDataUrl(color);
     }
 
     if (color.startsWith("data:image")) {
@@ -287,6 +276,7 @@ class DisplayCanvas extends React.Component {
           drizzleState={this.props.drizzleState}
           currentSection={this.state.currentSection}
           sectionId={this.state.currentSectionId}
+          offerRef={this.state.sectionOffers}
         />
       </div>
     );

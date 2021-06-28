@@ -149,6 +149,12 @@ class SetColor extends React.Component {
     reader.onload = async (e) => {
       const buffer = (e.target.result)
       let expectedColor = new Int8Array(buffer);
+      // let x;
+      // for (let i = 0; i < expectedColor.length; i++) {
+      //   x += expectedColor[i] + ",";
+      // }
+      // console.log(x);
+      // console.log(expectedColor);
       this.setState({ color: expectedColor});
     this.displayColor();
     };
