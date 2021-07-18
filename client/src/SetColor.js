@@ -8,7 +8,7 @@ class SetColor extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = { sectionId: '', color: '', stackId: null, imageDisplayed: false };
+    this.state = { sectionId: '', color: '', stackId: null, imageDisplayed: false, hex: '' };
     this.handleChangeSectionId = this.handleChangeSectionId.bind(this);
     this.handleChangeColor = this.handleChangeColor.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -38,7 +38,7 @@ class SetColor extends React.Component {
       from: drizzleState.accounts[0]
     });
 
-    this.setState({ stackId });
+    this.setState({ stackId, hex });
   }
 
   bytesToHex(bytes) {
@@ -59,6 +59,8 @@ class SetColor extends React.Component {
 
     // if transaction hash does not exist, don't display anything
     if (!txHash) return null;
+    this.props.sectionsObj.color = this.state.hex;
+    this.props.sectionsObj.updatedColor = true;
 
     // otherwise, return the transaction status
     return `Transaction status: ${transactions[txHash] && transactions[txHash].status}`;

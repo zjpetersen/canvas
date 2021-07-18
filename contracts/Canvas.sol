@@ -25,8 +25,8 @@ contract Canvas {
 
     event SectionPurchased(uint sectionId, address buyer, address seller, uint price);
     event AskUpdated(uint sectionId, address owner, uint ask);
-    event ColorUpdated(uint sectionId, address owner, string updatedColor);
     event ColorBytesUpdated(uint sectionId, address owner, bytes updatedColor);
+    event OffersUpdated(uint sectionId, address offerer, uint offer, bool globalOffer);
 
 
     constructor() {
@@ -74,6 +74,7 @@ contract Canvas {
 
         section.owner = payable(msg.sender);
         section.hasOwner = true;
+        emit SectionPurchased(sectionId, msg.sender, address(0), 0);
     }
 
 
@@ -96,6 +97,7 @@ contract Canvas {
         if (highestOffer.amount >= amount) {
           offers[position]=offers[offers.length-1];
           offers.pop();
+          emit OffersUpdated(sectionId, highestOffer.offerer, 0, false);
           updateOwner(section, sectionId, highestOffer.offerer, highestOffer.amount);
         } else {
           section.ask = amount;
@@ -135,6 +137,7 @@ contract Canvas {
               Offer memory newOffer = Offer({offerer: payable(msg.sender), amount: msg.value});
               offers.push(newOffer);
             // }
+            emit OffersUpdated(sectionId, msg.sender, msg.value, false);
         }
     }
 
@@ -167,6 +170,7 @@ contract Canvas {
         offers.pop();
 
         payable(msg.sender).transfer(amount);
+        emit OffersUpdated(sectionId, msg.sender, 0, false);
     }
 
     //End trading functions

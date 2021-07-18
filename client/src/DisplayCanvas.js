@@ -4,6 +4,7 @@ import './style/DisplayCanvas.css';
 import {Base64} from 'js-base64';
 import loadingGif from './media/Spinner-1s-200px.gif';
 import {convertToDataUrl} from './Utils';
+import {fetchSections} from './HttpClient';
 
 const WIDTH = 160;
 const HEIGHT = 160;
@@ -22,30 +23,34 @@ class DisplayCanvas extends React.Component {
     this.state = { sectionsArray: null, sections: null, canvas: null, currentSection: null, currentSectionId: null, sectionOffers: null};
     this.setCurrentSection = this.setCurrentSection.bind(this);
     this.getColor = this.getColor.bind(this);
-    this.fetchSections = this.fetchSections.bind(this);
     this.loading = this.loading.bind(this);
 
   }
 
   componentDidMount() {
-    const sectionsArray = this.fetchSections();
-    this.setState({sectionsArray: sectionsArray});
+    fetchSections(this, function (parent, data) {
+      console.log("Update sections array");
+      console.log(data);
+      parent.setState({sectionsArray : data});
+      console.log(parent.state);
+    });
   }
 
-  fetchSections() {
-    const canvasRef = this.props.drizzle.contracts.Canvas;
-    const LENGTH = ARR_LEN / PAGES;
 
-    let result = [];
-    let cursor = 0;
+  // fetchSections() {
+  //   const canvasRef = this.props.drizzle.contracts.Canvas;
+  //   const LENGTH = ARR_LEN / PAGES;
 
-    for (let i = 0; i < PAGES; i++) {
-      let x = canvasRef.methods["fetchSections"].cacheCall(cursor, LENGTH);
-      result = result.concat(x);
-      cursor += LENGTH;
-    }
-    return result;
-  }
+  //   let result = [];
+  //   let cursor = 0;
+
+  //   for (let i = 0; i < PAGES; i++) {
+  //     let x = canvasRef.methods["fetchSections"].cacheCall(cursor, LENGTH);
+  //     result = result.concat(x);
+  //     cursor += LENGTH;
+  //   }
+  //   return result;
+  // }
 
   setCurrentSection(i) {
     const { drizzle } = this.props;
@@ -86,7 +91,7 @@ class DisplayCanvas extends React.Component {
         break;
       }
       let section = sections[i];
-      let imgSrc = section.colorBytes;
+      let imgSrc = section.color;
       if (imgSrc.startsWith('0x') && imgSrc.length > 2) {
         imgSrc = convertToDataUrl(imgSrc);
       }
@@ -122,17 +127,18 @@ class DisplayCanvas extends React.Component {
     if (!this.state.sectionsArray) {
       return this.loading();
     }
-    let sections = [];
-    for (let i = 0; i < PAGES; i++) {
-      let x = Canvas.fetchSections[this.state.sectionsArray[i]];
-      if (!x) { 
-        return this.loading();
-      }
-      sections = sections.concat(x.value);
-    }
-    if (!sections) { 
-      return this.loading();
-    }
+    // let sections = [];
+    // for (let i = 0; i < PAGES; i++) {
+    //   let x = Canvas.fetchSections[this.state.sectionsArray[i]];
+    //   if (!x) { 
+    //     return this.loading();
+    //   }
+    //   sections = sections.concat(x.value);
+    // }
+    // if (!sections) { 
+    //   return this.loading();
+    // }
+    let sections = this.state.sectionsArray;
 
     let result = [];
     //Naive for loop, look to clean this up
@@ -146,111 +152,6 @@ class DisplayCanvas extends React.Component {
     // console.log(n2-n);
   
     return <div id="divCanvas">{result}</div>;
-  }
-
-  colorImages = (row, col, pix, SECTION_SIZE, sections, sectionId, context) => {
-    let section = sections.value[sectionId];
-    let color = section.colorBytes;
-    if (color.startsWith('0x') && color.length > 2) {
-      color = convertToDataUrl(color);
-    }
-
-    if (color.startsWith("data:image")) {
-      let img = new Image(); 
-      //Need event listener to make sure image has loaded before we write it to the canvas
-      img.addEventListener('load', function() {
-        context.drawImage(img,col*SECTION_SIZE, row*SECTION_SIZE, SECTION_SIZE, SECTION_SIZE);
-      }, false);
-      img.src = color;
-      return;
-    }
-
-  }
-  colorPixels = (row, col, pix, SECTION_SIZE, ROW_SIZE, COLUMN_SIZE, sections, sectionId, context) => {
-    //row=0, col=1 : pixelId = 16
-    //row=2, col=0 : pixelId = 20480 (2*10*16*16*4)
-    //row=2, col=1 : pixelId = 20608 (2*10*16*16*4 + 2*16*4)
-    //Number of pixels in a row
-    let section = sections.value[sectionId];
-    let color = section.encodedColor ? section.encodedColor : "#00FF00"; //green
-    if (sectionId === 0) {
-      color = "#0000FF" //blue
-    }
-    if (color.startsWith("data:image")) {
-      return;
-    } else if (!color.startsWith("#")) {
-      color = "#FF0000"; //red
-    }
-    let rgbColor = this.hexToRgb(color);
-    const ROW_PIX = ROW_SIZE*SECTION_SIZE*4; //10*16*4=640
-    //Number of pixels in a full row of sections. I.e First row of drawing takes this many pixels
-    const FULL_ROW_PIX = ROW_PIX * SECTION_SIZE;
-    let startingRowPix = row*FULL_ROW_PIX;
-    let startingColPix = col*SECTION_SIZE*4;
-    
-    const PIXELS_TO_DRAW = SECTION_SIZE * SECTION_SIZE;
-    const STARTING_PIX = startingRowPix + startingColPix;
-
-    for (let pixId = STARTING_PIX, pixCount = 0; pixCount < PIXELS_TO_DRAW; ) {
-      pix[pixId  ] = rgbColor['r']; // red
-      pix[pixId+1] = rgbColor['g']; // green
-      pix[pixId+2] = rgbColor['b']; // blue
-
-      pixCount++;
-      if (pixCount % SECTION_SIZE*4 === 0) {
-        pixId += 4+ROW_PIX -  SECTION_SIZE*4;
-        // console.log("New row");
-      } else {
-        pixId +=4;
-      }
-      // console.log(pixId);
-    }
-
-
-  }
-
-  buildCanvas2 = () => {
-    // var d = new Date();
-    // var n = d.getTime();
-    const { Canvas } = this.props.drizzleState.contracts;
-
-    const sections = Canvas.getSections[this.state.sectionsArray];
-    if (!sections) { return;}
-
-    // let result = [];
-    let canvas = document.getElementById("myCanvas");
-    if (!canvas) {
-      return;
-    }
-    let context = canvas.getContext("2d");
-    // context.fillStyle = "#000000";
-    context.fillRect(0,0, WIDTH*SCALING_FACTOR, HEIGHT*SCALING_FACTOR);
-
-    let imgd = context.getImageData(0, 0, WIDTH*SCALING_FACTOR, HEIGHT*SCALING_FACTOR);
-    let pix = imgd.data;
-    // console.log(pix);
-    let sectionId = 0;
-    
-    // for (let i = 0; i < ROW_SIZE; i++) {
-    //   for (let j = 0; j < COLUMN_SIZE; j++, sectionId++) {
-    //     this.colorPixels(i, j, pix, SECTION_SIZE*SCALING_FACTOR, ROW_SIZE, COLUMN_SIZE, sections, sectionId, context);
-    //   }
-    // }
-
-    context.putImageData(imgd, 0,0);
-    // context.imaageSmoothingEnabled = false;
-
-    sectionId = 0;
-    for (let i = 0; i < ROW_SIZE; i++) {
-      for (let j = 0; j < COLUMN_SIZE; j++, sectionId++) {
-        this.colorImages(i, j, pix, SECTION_SIZE*SCALING_FACTOR, sections, sectionId, context);
-      }
-    }
-
-    // var d2 = new Date();
-    // var n2 = d2.getTime();
-    // console.log("buildCanvas2 time");
-    // console.log(n2-n);
   }
 
   getHtmlCanvas = () => {
@@ -275,9 +176,15 @@ class DisplayCanvas extends React.Component {
           drizzle={this.props.drizzle}
           drizzleState={this.props.drizzleState}
           currentSection={this.state.currentSection}
+          sectionsObj = {this.state.sectionsArray}
           sectionId={this.state.currentSectionId}
           offerRef={this.state.sectionOffers}
         />
+
+        {/* <EventListener
+          drizzle={this.props.drizzle}
+          drizzleState={this.props.drizzleState}
+        /> */}
       </div>
     );
   }

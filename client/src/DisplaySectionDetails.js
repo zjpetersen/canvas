@@ -59,14 +59,13 @@ class DisplaySectionDetails extends React.Component {
   }
 
   getSectionDetails = () => {
-    if (!this.props.currentSection || !this.props.sectionId || !this.props.offerRef) {
+    if (!this.props.currentSection || !this.props.sectionId || !this.props.offerRef || !this.props.sectionsObj) {
       return;
     }
 
     const { Canvas } = this.props.drizzleState.contracts;
     const section = Canvas.getSection[this.props.currentSection];
     const offers = Canvas.getOffersForSection[this.props.offerRef];
-    // console.log(this.props.sectionId);
     
       return (
         <div>
@@ -82,6 +81,7 @@ class DisplaySectionDetails extends React.Component {
             drizzleState={this.props.drizzleState}
             sectionId={this.props.sectionId}
             owner={section && section.value && section.value.owner}
+            sectionsObj={this.props.sectionsObj[this.props.sectionId]}
           />
           <SetColor
             drizzle={this.props.drizzle}
@@ -89,6 +89,7 @@ class DisplaySectionDetails extends React.Component {
             sectionId={this.props.sectionId}
             owner={section && section.value && section.value.owner}
             updatedColor={section && section.value && section.value.updatedColor}
+            sectionsObj={this.props.sectionsObj[this.props.sectionId]}
           />
 
         </div>

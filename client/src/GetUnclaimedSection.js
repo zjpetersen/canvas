@@ -33,6 +33,8 @@ class GetUnclaimedSection extends React.Component {
 
     // if transaction hash does not exist, don't display anything
     if (!txHash) return null;
+    this.props.sectionsObj.owner = this.props.drizzleState.accounts[0];
+    this.props.sectionsObj.hasOwner = true;
 
     // otherwise, return the transaction status
     return `Transaction status: ${transactions[txHash] && transactions[txHash].status}`;
@@ -45,7 +47,7 @@ class GetUnclaimedSection extends React.Component {
 
     return <div className="center">
       <button className="basic" type="button" onClick={this.handleSubmit}>Claim Section</button>
-      {/* <div>{this.getTxStatus()}</div> */}
+      <div>{this.getTxStatus()}</div>
       {/* <br />
       <br /> */}
     </div>;
