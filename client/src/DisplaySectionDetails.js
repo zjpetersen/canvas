@@ -7,9 +7,9 @@ class DisplaySectionDetails extends React.Component {
   state = { section: null, sectionId: null, canvas: null, offerRef: null};
 
   getOwner = (section) => {
-    if (section && section.value) {
-      if (section.value.owner !== '0x0000000000000000000000000000000000000000') {
-        return <p>Owner: {section && section.value && section.value.owner}</p>;
+    if (section) {
+      if (section.owner !== '0x0000000000000000000000000000000000000000') {
+        return <p>Owner: {section && section.owner}</p>;
       } else {
         return <p>No owner, claim the section now</p>
       }
@@ -18,8 +18,8 @@ class DisplaySectionDetails extends React.Component {
   }
 
   getPicture = (section) => {
-    if (section && section.value) {
-      let imgSrc = section.value.colorBytes;
+    if (section) {
+      let imgSrc = section.color;
       if (imgSrc.startsWith('0x') && imgSrc.length > 2) {
         imgSrc = convertToDataUrl(imgSrc);
       }
@@ -31,9 +31,9 @@ class DisplaySectionDetails extends React.Component {
   }
 
   getAsk = (section) => {
-    if (section && section.value) {
-      if (section.value.ask !== '0') {
-        return <p>Ask: {section && section.value && section.value.ask}</p>;
+    if (section) {
+      if (section.ask !== '0') {
+        return <p>Ask: {section && section.ask}</p>;
       } else {
         return <p>No ask has been set.</p>
       }
@@ -66,14 +66,15 @@ class DisplaySectionDetails extends React.Component {
     const { Canvas } = this.props.drizzleState.contracts;
     const section = Canvas.getSection[this.props.currentSection];
     const offers = Canvas.getOffersForSection[this.props.offerRef];
+    const secObj = this.props.sectionsObj[this.props.sectionId];
     
       return (
         <div>
           <div className="center">
             <p>Section details for section {this.props.sectionId}</p>
-            {this.getPicture(section)}
-            {this.getOwner(section)}
-            {this.getAsk(section)}
+            {this.getPicture(secObj)}
+            {this.getOwner(secObj)}
+            {this.getAsk(secObj)}
             {this.getOffer(offers)}
           </div>
           <GetUnclaimedSection
@@ -89,7 +90,7 @@ class DisplaySectionDetails extends React.Component {
             sectionId={this.props.sectionId}
             owner={section && section.value && section.value.owner}
             updatedColor={section && section.value && section.value.updatedColor}
-            sectionsObj={this.props.sectionsObj[this.props.sectionId]}
+            sectionsObj={secObj}
           />
 
         </div>

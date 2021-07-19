@@ -63,7 +63,9 @@ class SetColor extends React.Component {
     this.props.sectionsObj.updatedColor = true;
 
     // otherwise, return the transaction status
-    return `Transaction status: ${transactions[txHash] && transactions[txHash].status}`;
+    let msg = `Transaction status: ${transactions[txHash] && transactions[txHash].status}`;
+    this.setState({stackId: null, sectionId: ''});
+    return msg;
   };
 
   updateColor = () => {
