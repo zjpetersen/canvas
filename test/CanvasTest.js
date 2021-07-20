@@ -99,10 +99,10 @@ contract("Canvas", (accounts) => {
    });
 
    it("can set color for owner", async () => {
-     await canvas.setColorBytes(sectionId1, expectedColor, {from: accounts[1]});
-     const color = await canvas.getColorBytes(sectionId1);
-
-     assert.equal(color, hex, "Color should be set");
+     let tx = await canvas.setColorBytes(sectionId1, expectedColor, {from: accounts[1]});
+     truffleAssert.eventEmitted(tx, 'ColorBytesUpdated', (ev) => {
+       return ev.updatedColor === hex;
+     });
    });
 
    it("cannot set color a second time", async () => {

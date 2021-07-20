@@ -3,7 +3,6 @@ pragma solidity ^0.8.4;
 contract Canvas {
     struct Section {
         address payable owner;
-        bytes colorBytes;
         uint ask;
         bool updatedColor;
         bool hasOwner;
@@ -20,7 +19,7 @@ contract Canvas {
     //offers for any section
     // Offer[] globalOffers;
     // mapping(uint => mapping(address => uint)) offerMap;
-    mapping(address => uint) pendingReturns;
+    mapping(address => uint) pendingReturns; //TODO delete this
     address public admin;
 
     event SectionPurchased(uint sectionId, address buyer, address seller, uint price);
@@ -33,23 +32,19 @@ contract Canvas {
         admin = msg.sender;
     }
 
-    function getOwner(uint sectionId) public view returns (address) {
+    function getOwner(uint sectionId) external view returns (address) {
         return getValidRegion(sectionId).owner;
     }
 
-    function getColorBytes(uint sectionId) public view returns (bytes memory) {
-        return getValidRegion(sectionId).colorBytes;
-    }
-
-    function getAsk(uint sectionId) public view returns (uint) {
+    function getAsk(uint sectionId) external view returns (uint) {
         return getValidRegion(sectionId).ask;
     }
 
-    function getSection(uint sectionId) public view returns (Section memory) {
+    function getSection(uint sectionId) external view returns (Section memory) {
         return getValidRegion(sectionId);
     }
 
-    function fetchSections(uint cursor, uint length) public view returns (Section[] memory values) {
+    function fetchSections(uint cursor, uint length) external view returns (Section[] memory values) {
         if (length > sections.length - cursor) {
             length = sections.length - cursor;
         }
@@ -62,7 +57,7 @@ contract Canvas {
         return values;
     }
 
-    function getOffersForSection(uint sectionId) public view returns (Offer[] memory) {
+    function getOffersForSection(uint sectionId) external view returns (Offer[] memory) {
         getValidRegion(sectionId);
 
         return offerMap[sectionId];
@@ -79,7 +74,7 @@ contract Canvas {
 
 
     //Trading functions
-    function ask(uint sectionId, uint amount) public {
+    function ask(uint sectionId, uint amount) external {
         Section storage section = getValidRegion(sectionId);
         require(isOwner(section));
         require(amount > 1000); //Sanity check, amount needs to be in wei
@@ -105,7 +100,7 @@ contract Canvas {
         }
     }
 
-    function removeAsk(uint sectionId) public {
+    function removeAsk(uint sectionId) external {
         Section storage section = getValidRegion(sectionId);
         require(isOwner(section));
 
@@ -113,14 +108,14 @@ contract Canvas {
         emit AskUpdated(sectionId, msg.sender, 0);
     }
 
-    function offer(uint sectionId) public payable {
+    function offer(uint sectionId) external payable {
         Section storage section = getValidRegion(sectionId);
         require(!isOwner(section));
         if (section.ask != 0 && section.ask < msg.value) {
             revert("There is already an ask lower than the offer, resend with the ask price");
         } else if (section.ask != 0 && section.ask == msg.value) { //Accept the offer right away
             // addPendingReturn(msg.value - section.ask);
-            updateOwner(section, sectionId, msg.sender, section.ask);
+            updateOwner(section, sectionId, msg.sender, msg.value);
         } else {
             Offer[] storage offers = offerMap[sectionId];
             // mapping(address => uint) storage offers = offerMap[sectionId];
@@ -145,7 +140,7 @@ contract Canvas {
     // function offer() public payable {
     // }
 
-    function removeOffer(uint sectionId) public {
+    function removeOffer(uint sectionId) external {
         Section storage section = getValidRegion(sectionId);
         require(!isOwner(section));
 
@@ -175,13 +170,12 @@ contract Canvas {
 
     //End trading functions
 
-    function setColorBytes(uint sectionId, bytes memory color) public {
+    function setColorBytes(uint sectionId, bytes memory color) external {
         Section storage section = getValidRegion(sectionId);
         require(isOwner(section));
         require(!section.updatedColor);
-        //TODO validate color string
+        //TODO validate color string, also some check on color size.
 
-        section.colorBytes = color;
         section.updatedColor = true;
         emit ColorBytesUpdated(sectionId, msg.sender, color);
     }
@@ -207,7 +201,4 @@ contract Canvas {
         }
         return false;
     }
-
-
- 
 }
