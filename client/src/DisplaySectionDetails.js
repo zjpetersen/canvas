@@ -1,6 +1,8 @@
 import React from "react";
+import Web3 from "web3";
 import GetUnclaimedSection from "./GetUnclaimedSection";
 import SetColor from "./SetColor";
+import SetAsk from "./SetAsk";
 import {convertToDataUrl} from './Utils';
 
 class DisplaySectionDetails extends React.Component {
@@ -33,7 +35,7 @@ class DisplaySectionDetails extends React.Component {
   getAsk = (section) => {
     if (section) {
       if (section.ask !== '0') {
-        return <p>Ask: {section && section.ask}</p>;
+        return <p>Ask: {section && Web3.utils.fromWei(section.ask)}</p>;
       } else {
         return <p>No ask has been set.</p>
       }
@@ -90,6 +92,14 @@ class DisplaySectionDetails extends React.Component {
             sectionId={this.props.sectionId}
             owner={section && section.value && section.value.owner}
             updatedColor={section && section.value && section.value.updatedColor}
+            sectionsObj={secObj}
+          />
+          <SetAsk
+            drizzle={this.props.drizzle}
+            drizzleState={this.props.drizzleState}
+            sectionId={this.props.sectionId}
+            owner={section && section.value && section.value.owner}
+            ask={section && section.value && section.value.ask}
             sectionsObj={secObj}
           />
 
