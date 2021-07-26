@@ -3,6 +3,7 @@ import Web3 from "web3";
 import GetUnclaimedSection from "./GetUnclaimedSection";
 import SetColor from "./SetColor";
 import SetAsk from "./SetAsk";
+import SetOffer from "./SetOffer";
 import {convertToDataUrl} from './Utils';
 
 class DisplaySectionDetails extends React.Component {
@@ -52,7 +53,7 @@ class DisplaySectionDetails extends React.Component {
         }
       }
       if (highestOffer.amount !== '0') {
-        return <p>Highest offer: {highestOffer.amount} wei</p>
+        return <p>Highest offer: {Web3.utils.fromWei(highestOffer.amount)} ether</p>
       } else {
         return <p>No offers yet.</p>
       }
@@ -85,6 +86,14 @@ class DisplaySectionDetails extends React.Component {
             sectionId={this.props.sectionId}
             owner={section && section.value && section.value.owner}
             sectionsObj={this.props.sectionsObj[this.props.sectionId]}
+          />
+          <SetOffer
+            drizzle={this.props.drizzle}
+            drizzleState={this.props.drizzleState}
+            sectionId={this.props.sectionId}
+            owner={section && section.value && section.value.owner}
+            ask={section && section.value && section.value.ask}
+            sectionsObj={secObj}
           />
           <SetColor
             drizzle={this.props.drizzle}
