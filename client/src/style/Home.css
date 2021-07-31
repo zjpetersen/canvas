@@ -17,10 +17,21 @@ body {
   height: 600px;
 }
 
+#updateExBig {
+  float: left;
+  width: 256px;
+  height: 256px;
+}
+
+#updateEx {
+  float: left;
+  width: 128px;
+  height: 128px;
+}
 
 /* Style the content */
 .background-text {
-  color: rgb(0, 0, 0);
+  color: rgb(168, 62, 62);
   padding: 10px;
   font: Helvetica;
 }
@@ -32,18 +43,63 @@ body {
 .content {
     margin-left:auto;
     margin-right:auto;
-    text-align:center;
 }
 
-p {
-  background-color: #ddd;
-  padding: 10px;
-  text-align:center;
+h2 {
+  text-align: center;
+}
+
+p{
   font: sans-serif;
+}
+
+#inlineP {
+  padding-right: 115px;
+  float: left;
 }
 
 /* Style the footer */
 .footer {
   background-color: #f1f1f1;
   padding: 10px;
+}
+
+.column {
+  float: left;
+  padding: 1px;
+}
+
+.left, .right {
+  width: 25%;
+  /* background-color: #ffc880; */
+}
+
+
+.middle {
+  width: 50%;
+  /* background-color: #b4fdb1; */
+}
+
+.leftInner {
+  width: 60%;
+  /* background-color: #ffc880; */
+}
+
+.rightInner {
+  width: 40%;
+  /* background-color: #b4fdb1; */
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Responsive layout - makes the three columns stack on top of each other instead of next to each other */
+@media screen and (max-width: 600px) {
+  .column {
+    width: 100%;
+  }
 }

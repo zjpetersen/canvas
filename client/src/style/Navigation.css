@@ -1,32 +1,57 @@
-ul {
+#navul {
   list-style-type: none;
-  margin: 0;
   padding: 0;
   overflow: hidden;
-  background-color: #333;
+  position: relative;
+  top: 50%;
+  transform: translateY(50%);
 
 }
 
-li {
+.color {
+  background-color: rgb(197, 206, 255);
+}
+
+
+#navli {
   float: left;
-  /* padding: 5px; */
 } 
+
+.helper {
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+}
+
+#logo {
+  float: left;
+  width: 64px;
+  height: 64px;
+  position: relative;
+  top: 50%;
+  transform: translateY(50%);
+}
+
+#logoText {
+  font-size: 30px;
+  font-family: Georgia;
+}
 
 #nav {
       display: block;
   text-align: center;
   padding: 10px 16px;
   text-decoration: none;
-    color: white;
+    color:#333;
     text-decoration: none;
     /* margin-bottom: 5px; */
 }
 
 
 /* Change the link color to #111 (black) on hover */
-li a:hover {
+#navli a:hover {
     /* color: #856f9e; */
-  /* background-color: #111; */
+  background-color: rgb(255, 170, 58);
 }
 
 /* .active {
@@ -34,5 +59,5 @@ li a:hover {
 } */
 .current {
     /* border-bottom: 4px solid white; */
-    background-color: #5a235f;
+    background-color: rgb(255, 207, 152);
 }
