@@ -22,21 +22,21 @@ class App extends React.Component {
       const drizzleState = drizzle.store.getState();
 
       if (drizzleState.web3) {
-        // console.log("has web3 instance");
-        // console.log(drizzleState.web3);
-        // console.log(typeof(drizzleState.web3.networkId));
-        // console.log(drizzleState.web3.hasOwnProperty('networkId'));
-        // console.log(drizzleState);
         this.setState({web3: drizzleState.web3});
       }
-      // if (drizzleState.drizzleStatus) {
-      //   console.log(drizzleState);
-      // }
 
       // check to see if it's ready, if so, update local component state
       if (drizzleState.drizzleStatus.initialized) {
         this.setState({ loading: false, drizzleState: drizzleState, web3: drizzleState.web3 });
       }
+      
+      //Should reload the page if the account or network is changed
+      window.ethereum.on('accountsChanged', (accounts) => {
+        window.location.reload();
+      });
+      window.ethereum.on('networkChanged', (networkId) => {
+        window.location.reload();
+      });
     });
   }
 
@@ -45,7 +45,10 @@ class App extends React.Component {
   }
 
   render() {
-    if (this.state.web3 && this.state.web3.hasOwnProperty('networkId') && typeof (this.state.web3.networkId) === 'undefined') {
+    //Not connected to a network or account is not connected
+    if (this.state.web3 
+          && ((this.state.web3.hasOwnProperty('networkId') && typeof (this.state.web3.networkId) === 'undefined') || this.state.web3.status === 'failed')
+      ) {
       return (
         <main>
           <h1>⚠️</h1>
