@@ -1,5 +1,3 @@
-import React from "react";
-
 export const fetchSections =(parent, fn) => {
     console.log("fetch sections");
     const url = "http://localhost:4000/sections";

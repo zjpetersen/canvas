@@ -50,7 +50,6 @@ class DisplaySectionDetails extends React.Component {
       } else {
         return <p>No offers yet.</p>
       }
-    return;
   }
 
   highestOffer = (offers) => {

@@ -1,7 +1,6 @@
 import React from "react";
 import DisplaySectionDetails from './DisplaySectionDetails';
 import './style/DisplayCanvas.css';
-import {Base64} from 'js-base64';
 import loadingGif from './media/Spinner-1s-200px.gif';
 import {convertToDataUrl} from './Utils';
 import {fetchSections} from './HttpClient';
@@ -9,11 +8,6 @@ import {fetchSections} from './HttpClient';
 const WIDTH = 160;
 const HEIGHT = 160;
 const ROW_SIZE = 112; 
-const COLUMN_SIZE = 63; 
-const SECTION_SIZE = 16;
-const SCALING_FACTOR = 1;
-const ARR_LEN = ROW_SIZE * COLUMN_SIZE;
-const PAGES = 56;
 
 
 class DisplayCanvas extends React.Component {
@@ -83,7 +77,6 @@ class DisplayCanvas extends React.Component {
   }
 
   buildRow = (sections, start, end, ROW_SIZE) => {
-    let x = start / ROW_SIZE;
     // console.log("building row: " + x);
     let row = [];
     for (let i = start; i < end; i++) {
