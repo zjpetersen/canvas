@@ -31,7 +31,7 @@ class SetColor extends React.Component {
 
   handleSubmit(event) {
     const { drizzle, drizzleState } = this.props;
-    const contract = drizzle.contracts.Canvas;
+    const contract = drizzle.contracts.MosaicMarket;
 
     let hex = this.bytesToHex(this.state.color);
     const stackId = contract.methods["setColorBytes"].cacheSend(this.props.sectionId, hex, {

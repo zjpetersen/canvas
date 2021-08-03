@@ -1,4 +1,4 @@
-var Canvas = artifacts.require("Canvas");
+var MosaicMarket = artifacts.require("MosaicMarket");
 
  const SECTION_ID_INVALID = 7056;
  const PRICE_1 = "500000000000000000"; //.5 ether
@@ -22,7 +22,7 @@ const getColor = () => {
 module.exports = async function(done) {
     console.log("Getting deployed version of Canvas...");
     const accounts = await web3.eth.getAccounts();
-    const canvas = await Canvas.deployed();
+    const canvas = await MosaicMarket.deployed();
 
     const color = getColor();
     for (let sectionId = 0; sectionId < SECTION_ID_INVALID; sectionId++) {

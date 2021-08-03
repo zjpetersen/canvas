@@ -54,7 +54,7 @@ class DisplayCanvas extends React.Component {
 
   setCurrentSection(i) {
     const { drizzle } = this.props;
-    const canvas = drizzle.contracts.Canvas;
+    const canvas = drizzle.contracts.MosaicMarket;
 
     // let drizzle know we want to call the `checkSection` method with `value`
     const section = canvas.methods["getSection"].cacheCall(i);
@@ -123,21 +123,9 @@ class DisplayCanvas extends React.Component {
     // var d = new Date();
     // var n = d.getTime();
 
-    const { Canvas } = this.props.drizzleState.contracts;
     if (!this.state.sectionsArray) {
       return this.loading();
     }
-    // let sections = [];
-    // for (let i = 0; i < PAGES; i++) {
-    //   let x = Canvas.fetchSections[this.state.sectionsArray[i]];
-    //   if (!x) { 
-    //     return this.loading();
-    //   }
-    //   sections = sections.concat(x.value);
-    // }
-    // if (!sections) { 
-    //   return this.loading();
-    // }
     let sections = this.state.sectionsArray;
 
     let result = [];

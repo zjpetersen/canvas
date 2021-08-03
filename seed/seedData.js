@@ -1,4 +1,4 @@
-var Canvas = artifacts.require("Canvas");
+var MosaicMarket = artifacts.require("MosaicMarket");
 
  let sectionId5 = 5;
  const SECTION_ID_NEG = -1;
@@ -10,7 +10,7 @@ var Canvas = artifacts.require("Canvas");
 module.exports = async function(done) {
     console.log("Getting deployed version of Canvas...");
     const accounts = await web3.eth.getAccounts();
-    const canvas = await Canvas.deployed();
+    const canvas = await MosaicMarket.deployed();
 
     console.log("Assigning section 5...");
     await canvas.getSectionForFree(sectionId5, {from: accounts[0]});

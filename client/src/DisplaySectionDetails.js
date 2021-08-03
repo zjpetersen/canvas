@@ -44,21 +44,25 @@ class DisplaySectionDetails extends React.Component {
     return;
   }
 
-  getOffer = (offers) => {
-    if (offers && offers.value) {
-      let highestOffer = { amount: '0', offerer: '0x' };
-      for (let i = 0; i < offers.value.length; i++) {
-        if (highestOffer.amount < offers.value[i].amount) {
-          highestOffer = offers.value[i];
-        }
-      }
+  getOffer = (highestOffer) => {
       if (highestOffer.amount !== '0') {
         return <p>Highest offer: {Web3.utils.fromWei(highestOffer.amount)} ether</p>
       } else {
         return <p>No offers yet.</p>
       }
-    }
     return;
+  }
+
+  highestOffer = (offers) => {
+    let highestOffer = { amount: '0', offerer: '0x' };
+    if (offers && offers.value) {
+      for (let i = 0; i < offers.value.length; i++) {
+        if (highestOffer.amount < offers.value[i].amount) {
+          highestOffer = offers.value[i];
+        }
+      }
+    }
+    return highestOffer;
   }
 
   getSectionDetails = () => {
@@ -66,10 +70,11 @@ class DisplaySectionDetails extends React.Component {
       return;
     }
 
-    const { Canvas } = this.props.drizzleState.contracts;
-    const section = Canvas.getSection[this.props.currentSection];
-    const offers = Canvas.getOffersForSection[this.props.offerRef];
+    const { MosaicMarket } = this.props.drizzleState.contracts;
+    const section = MosaicMarket.getSection[this.props.currentSection];
+    const offers = MosaicMarket.getOffersForSection[this.props.offerRef];
     const secObj = this.props.sectionsObj[this.props.sectionId];
+    let highestOffer = this.highestOffer(offers);
     
       return (
         <div>
@@ -78,7 +83,7 @@ class DisplaySectionDetails extends React.Component {
             {this.getPicture(secObj)}
             {this.getOwner(secObj)}
             {this.getAsk(secObj)}
-            {this.getOffer(offers)}
+            {this.getOffer(highestOffer)}
           </div>
           <GetUnclaimedSection
             drizzle={this.props.drizzle}
@@ -109,6 +114,7 @@ class DisplaySectionDetails extends React.Component {
             sectionId={this.props.sectionId}
             owner={section && section.value && section.value.owner}
             ask={section && section.value && section.value.ask}
+            highestOffer={highestOffer}
             sectionsObj={secObj}
           />
 

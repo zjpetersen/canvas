@@ -8,7 +8,7 @@ class SetAsk extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = { amount: '', stackId: null, imageDisplayed: false, hex: '' };
+    this.state = { amount: '', stackId: null, imageDisplayed: false, hex: '', tx: null };
     this.handleChangeAmount = this.handleChangeAmount.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.updateAsk = this.updateAsk.bind(this);
@@ -22,7 +22,7 @@ class SetAsk extends React.Component {
 
   handleRemoveSubmit(event) {
     const { drizzle, drizzleState } = this.props;
-    const contract = drizzle.contracts.Canvas;
+    const contract = drizzle.contracts.MosaicMarket;
     console.log("Removing ask");
     const stackId = contract.methods["removeAsk"].cacheSend(this.props.sectionId, {
       from: drizzleState.accounts[0]
@@ -34,7 +34,7 @@ class SetAsk extends React.Component {
   handleSubmit(event) {
       event.preventDefault();
     const { drizzle, drizzleState } = this.props;
-    const contract = drizzle.contracts.Canvas;
+    const contract = drizzle.contracts.MosaicMarket;
     console.log("Submitting number" + this.state.amount);
     let amount = Web3.utils.toWei(this.state.amount);
     console.log(amount);
@@ -55,15 +55,28 @@ class SetAsk extends React.Component {
     // if transaction hash does not exist, don't display anything
     if (!txHash) return null;
 
-    if (this.state.amount !== '') {
-      this.props.sectionsObj.ask = Web3.utils.toWei(this.state.amount);
-    } else {
-      this.props.sectionsObj.ask = '0';
-    }
+    //TODO transactions isn't working
+    console.log(transactionStack);
+      console.log(this.props.drizzleState);
+      console.log(txHash);
+    //   if (transactions[txHash] && transactions[txHash].status === 'Success') {
+
+          if (this.state.amount !== '') {
+              let offer = this.props.highestOffer;
+              if (offer && offer.amount !== '0' && offer.amount >= Web3.utils.toWei(this.state.amount)) {
+                  this.props.sectionsObj.ask = '0';
+                  this.props.sectionsObj.owner = offer.offerer;
+              } else {
+                  this.props.sectionsObj.ask = Web3.utils.toWei(this.state.amount);
+              }
+          } else {
+              this.props.sectionsObj.ask = '0';
+          }
+    //   }
 
     // otherwise, return the transaction status
     let msg = `Transaction status: ${transactions[txHash] && transactions[txHash].status}`;
-    this.setState({stackId: null, sectionId: '', amount: ''});
+    this.setState({stackId: null, sectionId: '', amount: '', tx: transactions[txHash]});
     return msg;
   };
 

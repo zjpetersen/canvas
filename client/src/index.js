@@ -6,7 +6,7 @@ import App from './App';
 
 // import drizzle functions and contract artifact
 import { Drizzle } from "@drizzle/store";
-import Canvas from "./contracts/Canvas.json";
+import Canvas from "./contracts/MosaicMarket.json";
 
 // let drizzle know what contracts we want and how to access our test blockchain
 const options = {

@@ -5,7 +5,7 @@ class ReadSection extends React.Component {
 
   componentDidMount() {
     const { drizzle, drizzleState } = this.props;
-    const canvas = drizzle.contracts.Canvas;
+    const canvas = drizzle.contracts.MosaicMarket;
     
     //Watch the 'getColor' method
     const color = canvas.methods["getColor"].cacheCall(10);
@@ -21,10 +21,10 @@ class ReadSection extends React.Component {
 
   render() {
     // get the contract state from drizzleState
-    const { Canvas } = this.props.drizzleState.contracts;
+    const { MosaicMarket} = this.props.drizzleState.contracts;
 
     // using the saved `color`, get the variable we're interested in
-    const color = Canvas.getColor[this.state.color];
+    const color = MosaicMarket.getColor[this.state.color];
 
     // if it exists, then we display its value
     // return <p>My stored color: {color && color.value}</p>;
