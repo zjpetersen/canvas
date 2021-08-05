@@ -14,7 +14,7 @@ class DisplayCanvas extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = { sectionsArray: null, sections: null, canvas: null, currentSection: null, currentSectionId: null, sectionOffers: null};
+    this.state = { sectionsArray: null, sections: null, canvas: null, currentSectionId: null, sectionOffers: null, owner: null, ask: null};
     this.setCurrentSection = this.setCurrentSection.bind(this);
     this.getColor = this.getColor.bind(this);
     this.loading = this.loading.bind(this);
@@ -30,30 +30,16 @@ class DisplayCanvas extends React.Component {
     });
   }
 
-
-  // fetchSections() {
-  //   const canvasRef = this.props.drizzle.contracts.Canvas;
-  //   const LENGTH = ARR_LEN / PAGES;
-
-  //   let result = [];
-  //   let cursor = 0;
-
-  //   for (let i = 0; i < PAGES; i++) {
-  //     let x = canvasRef.methods["fetchSections"].cacheCall(cursor, LENGTH);
-  //     result = result.concat(x);
-  //     cursor += LENGTH;
-  //   }
-  //   return result;
-  // }
-
   setCurrentSection(i) {
     const { drizzle } = this.props;
     const canvas = drizzle.contracts.MosaicMarket;
 
     // let drizzle know we want to call the `checkSection` method with `value`
-    const section = canvas.methods["getSection"].cacheCall(i);
+    const owner = canvas.methods["getOwner"].cacheCall(i);
+    const ask= canvas.methods["getAsk"].cacheCall(i);
     const offerRef = canvas.methods["getOffersForSection"].cacheCall(i);
-    this.setState({ currentSection: section, currentSectionId : i, sectionOffers: offerRef});
+
+    this.setState({currentSectionId : i, sectionOffers: offerRef, owner: owner, ask: ask});
   }
 
   hexToRgb(hex) {
@@ -156,16 +142,12 @@ class DisplayCanvas extends React.Component {
         <DisplaySectionDetails
           drizzle={this.props.drizzle}
           drizzleState={this.props.drizzleState}
-          currentSection={this.state.currentSection}
           sectionsObj = {this.state.sectionsArray}
           sectionId={this.state.currentSectionId}
           offerRef={this.state.sectionOffers}
+          owner={this.state.owner}
+          ask={this.state.ask}
         />
-
-        {/* <EventListener
-          drizzle={this.props.drizzle}
-          drizzleState={this.props.drizzleState}
-        /> */}
       </div>
     );
   }

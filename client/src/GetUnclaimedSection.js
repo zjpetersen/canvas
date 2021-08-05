@@ -17,6 +17,7 @@ class GetUnclaimedSection extends React.Component {
   handleSubmit(event) {
     const { drizzle, drizzleState } = this.props;
     const contract = drizzle.contracts.MosaicMarket;
+    console.log(contract);
     const stackId = contract.methods["getSectionForFree"].cacheSend(this.props.sectionId, {
       from: drizzleState.accounts[0]
     });

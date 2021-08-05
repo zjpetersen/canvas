@@ -65,13 +65,14 @@ class DisplaySectionDetails extends React.Component {
   }
 
   getSectionDetails = () => {
-    if (!this.props.currentSection || !this.props.sectionId || !this.props.offerRef || !this.props.sectionsObj) {
+    if (!this.props.sectionId || !this.props.offerRef || !this.props.sectionsObj || !this.props.owner || !this.props.ask) {
       return;
     }
 
     const { MosaicMarket } = this.props.drizzleState.contracts;
-    const section = MosaicMarket.getSection[this.props.currentSection];
     const offers = MosaicMarket.getOffersForSection[this.props.offerRef];
+    const owner = MosaicMarket.getOwner[this.props.owner];
+    const ask = MosaicMarket.getAsk[this.props.ask];
     const secObj = this.props.sectionsObj[this.props.sectionId];
     let highestOffer = this.highestOffer(offers);
     
@@ -88,31 +89,30 @@ class DisplaySectionDetails extends React.Component {
             drizzle={this.props.drizzle}
             drizzleState={this.props.drizzleState}
             sectionId={this.props.sectionId}
-            owner={section && section.value && section.value.owner}
+            owner={owner && owner.value}
             sectionsObj={this.props.sectionsObj[this.props.sectionId]}
           />
           <SetOffer
             drizzle={this.props.drizzle}
             drizzleState={this.props.drizzleState}
             sectionId={this.props.sectionId}
-            owner={section && section.value && section.value.owner}
-            ask={section && section.value && section.value.ask}
+            owner={owner && owner.value}
+            ask={ask && ask.value}
             sectionsObj={secObj}
           />
           <SetColor
             drizzle={this.props.drizzle}
             drizzleState={this.props.drizzleState}
             sectionId={this.props.sectionId}
-            owner={section && section.value && section.value.owner}
-            updatedColor={section && section.value && section.value.updatedColor}
+            owner={owner && owner.value} 
             sectionsObj={secObj}
           />
           <SetAsk
             drizzle={this.props.drizzle}
             drizzleState={this.props.drizzleState}
             sectionId={this.props.sectionId}
-            owner={section && section.value && section.value.owner}
-            ask={section && section.value && section.value.ask}
+            owner={owner && owner.value}
+            ask={ask && ask.value}
             highestOffer={highestOffer}
             sectionsObj={secObj}
           />

@@ -18,7 +18,6 @@ class SetColor extends React.Component {
     this.bytesToHex = this.bytesToHex.bind(this);
     this.setColor = this.setColor.bind(this);
     this.readFile = this.readFile.bind(this);
-    // this.bytesToBase64 = this.bytesToBase64.bind(this);
   }
 
   handleChangeSectionId(event) {
@@ -60,7 +59,6 @@ class SetColor extends React.Component {
     // if transaction hash does not exist, don't display anything
     if (!txHash) return null;
     this.props.sectionsObj.color = this.state.hex;
-    this.props.sectionsObj.updatedColor = true;
 
     // otherwise, return the transaction status
     let msg = `Transaction status: ${transactions[txHash] && transactions[txHash].status}`;
@@ -171,7 +169,7 @@ class SetColor extends React.Component {
   }
 
   setColor() {
-    if (!this.props.owner || this.props.updatedColor || !this.props.drizzleState.accounts || this.props.owner !== this.props.drizzleState.accounts[0]) {
+    if (!this.props.owner || !this.props.drizzleState.accounts || this.props.owner !== this.props.drizzleState.accounts[0]) {
       return;
     }
 
