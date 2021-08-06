@@ -65,7 +65,7 @@ class DisplayTileDetails extends React.Component {
   }
 
   getTileDetails = () => {
-    if (!this.props.tileId || !this.props.offerRef || !this.props.tilesObj || !this.props.owner || !this.props.ask) {
+    if (!this.props.offerRef || !this.props.tilesObj || !this.props.owner || !this.props.ask) {
       return;
     }
 
@@ -90,7 +90,7 @@ class DisplayTileDetails extends React.Component {
             drizzleState={this.props.drizzleState}
             tileId={this.props.tileId}
             owner={owner && owner.value}
-            tilesObj={this.props.tilesObj[this.props.tileId]}
+            tilesObj={secObj}
           />
           <SetOffer
             drizzle={this.props.drizzle}

@@ -44,7 +44,7 @@ class GetUnclaimedTile extends React.Component {
   };
 
   getUnclaimedTile = () => {
-    if (!this.props.tileId || this.props.owner !== '0x0000000000000000000000000000000000000000') {
+    if (!this.props.tilesObj || this.props.owner !== '0x0000000000000000000000000000000000000000') {
       return;
     }
 
