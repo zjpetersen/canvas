@@ -24,7 +24,7 @@ class SetAsk extends React.Component {
     const { drizzle, drizzleState } = this.props;
     const contract = drizzle.contracts.MosaicMarket;
     console.log("Removing ask");
-    const stackId = contract.methods["removeAsk"].cacheSend(this.props.sectionId, {
+    const stackId = contract.methods["removeAsk"].cacheSend(this.props.tileId, {
       from: drizzleState.accounts[0]
     });
 
@@ -38,7 +38,7 @@ class SetAsk extends React.Component {
     console.log("Submitting number" + this.state.amount);
     let amount = Web3.utils.toWei(this.state.amount);
     console.log(amount);
-    const stackId = contract.methods["ask"].cacheSend(this.props.sectionId, amount, {
+    const stackId = contract.methods["ask"].cacheSend(this.props.tileId, amount, {
       from: drizzleState.accounts[0]
     });
 
@@ -64,19 +64,19 @@ class SetAsk extends React.Component {
           if (this.state.amount !== '') {
               let offer = this.props.highestOffer;
               if (offer && offer.amount !== '0' && offer.amount >= Web3.utils.toWei(this.state.amount)) {
-                  this.props.sectionsObj.ask = '0';
-                  this.props.sectionsObj.owner = offer.offerer;
+                  this.props.tilesObj.ask = '0';
+                  this.props.tilesObj.owner = offer.offerer;
               } else {
-                  this.props.sectionsObj.ask = Web3.utils.toWei(this.state.amount);
+                  this.props.tilesObj.ask = Web3.utils.toWei(this.state.amount);
               }
           } else {
-              this.props.sectionsObj.ask = '0';
+              this.props.tilesObj.ask = '0';
           }
     //   }
 
     // otherwise, return the transaction status
     let msg = `Transaction status: ${transactions[txHash] && transactions[txHash].status}`;
-    this.setState({stackId: null, sectionId: '', amount: '', tx: transactions[txHash]});
+    this.setState({stackId: null, tileId: '', amount: '', tx: transactions[txHash]});
     return msg;
   };
 

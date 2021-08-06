@@ -1,24 +1,24 @@
 import React from "react";
 import './style/DisplayCanvas.css';
 
-class GetUnclaimedSection extends React.Component {
-  state = { stackId: null , sectionId: ''};
+class GetUnclaimedTile extends React.Component {
+  state = { stackId: null , tileId: ''};
   constructor(props) {
     super(props);
-    this.handleChangeSectionId = this.handleChangeSectionId.bind(this);
+    this.handleChangeTileId = this.handleChangeTileId.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.getUnclaimedSection = this.getUnclaimedSection.bind(this);
+    this.getUnclaimedTile = this.getUnclaimedTile.bind(this);
   }
 
-  handleChangeSectionId(event) {
-      this.setState({sectionId: this.props.sectionId});
+  handleChangeTileId(event) {
+      this.setState({tileId: this.props.tileId});
   }
 
   handleSubmit(event) {
     const { drizzle, drizzleState } = this.props;
     const contract = drizzle.contracts.MosaicMarket;
     console.log(contract);
-    const stackId = contract.methods["getSectionForFree"].cacheSend(this.props.sectionId, {
+    const stackId = contract.methods["getTileForFree"].cacheSend(this.props.tileId, {
       from: drizzleState.accounts[0]
     });
 
@@ -34,25 +34,23 @@ class GetUnclaimedSection extends React.Component {
 
     // if transaction hash does not exist, don't display anything
     if (!txHash) return null;
-    this.props.sectionsObj.owner = this.props.drizzleState.accounts[0];
-    this.props.sectionsObj.hasOwner = true;
+    this.props.tilesObj.owner = this.props.drizzleState.accounts[0];
+    this.props.tilesObj.hasOwner = true;
 
     // otherwise, return the transaction status
     let msg = `Transaction status: ${transactions[txHash] && transactions[txHash].status}`;
-    this.setState({stackId: null, sectionId: ''});
+    this.setState({stackId: null, tileId: ''});
     return msg;
   };
 
-  getUnclaimedSection = () => {
-    if (!this.props.sectionId || this.props.owner !== '0x0000000000000000000000000000000000000000') {
+  getUnclaimedTile = () => {
+    if (!this.props.tileId || this.props.owner !== '0x0000000000000000000000000000000000000000') {
       return;
     }
 
     return <div className="center">
-      <button className="basic" type="button" onClick={this.handleSubmit}>Claim Section</button>
+      <button className="basic" type="button" onClick={this.handleSubmit}>Claim Tile</button>
       <div>{this.getTxStatus()}</div>
-      {/* <br />
-      <br /> */}
     </div>;
 
 
@@ -61,10 +59,10 @@ class GetUnclaimedSection extends React.Component {
   render() {
     return (
         <div>
-          {this.getUnclaimedSection()}
+          {this.getUnclaimedTile()}
         </div>
     );
   }
 }
 
-export default GetUnclaimedSection;
+export default GetUnclaimedTile;

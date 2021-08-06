@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
-// import reportWebVitals from './reportWebVitals';
 
 // import drizzle functions and contract artifact
 import { Drizzle } from "@drizzle/store";
@@ -23,10 +22,3 @@ const options = {
 const drizzle = new Drizzle(options);
 
 ReactDOM.render(<App drizzle={drizzle} />, document.getElementById('root'));
-
-//ReactDOM.render(
-//  <React.StrictMode>
-//    <App />
-//  </React.StrictMode>,
-//  document.getElementById('root')
-//);

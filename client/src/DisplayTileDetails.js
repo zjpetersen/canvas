@@ -1,42 +1,42 @@
 import React from "react";
 import Web3 from "web3";
-import GetUnclaimedSection from "./GetUnclaimedSection";
+import GetUnclaimedTile from "./GetUnclaimedTile";
 import SetColor from "./SetColor";
 import SetAsk from "./SetAsk";
 import SetOffer from "./SetOffer";
 import {convertToDataUrl} from './Utils';
 
-class DisplaySectionDetails extends React.Component {
-  state = { section: null, sectionId: null, canvas: null, offerRef: null};
+class DisplayTileDetails extends React.Component {
+  state = { tile: null, tileId: null, canvas: null, offerRef: null};
 
-  getOwner = (section) => {
-    if (section) {
-      if (section.owner !== '0x0000000000000000000000000000000000000000') {
-        return <p>Owner: {section && section.owner}</p>;
+  getOwner = (tile) => {
+    if (tile) {
+      if (tile.owner !== '0x0000000000000000000000000000000000000000') {
+        return <p>Owner: {tile && tile.owner}</p>;
       } else {
-        return <p>No owner, claim the section now</p>
+        return <p>No owner, claim the tile now</p>
       }
     }
     return;
   }
 
-  getPicture = (section) => {
-    if (section) {
-      let imgSrc = section.color;
+  getPicture = (tile) => {
+    if (tile) {
+      let imgSrc = tile.color;
       if (imgSrc.startsWith('0x') && imgSrc.length > 2) {
         imgSrc = convertToDataUrl(imgSrc);
       }
       if (imgSrc.startsWith("data:image")) {
-        return <img id="detailedImg" src={imgSrc} alt="Section"/>;
+        return <img id="detailedImg" src={imgSrc} alt="Tile"/>;
       }
     }
     return;
   }
 
-  getAsk = (section) => {
-    if (section) {
-      if (section.ask !== '0') {
-        return <p>Ask: {section && Web3.utils.fromWei(section.ask)}</p>;
+  getAsk = (tile) => {
+    if (tile) {
+      if (tile.ask !== '0') {
+        return <p>Ask: {tile && Web3.utils.fromWei(tile.ask)}</p>;
       } else {
         return <p>No ask has been set.</p>
       }
@@ -64,57 +64,57 @@ class DisplaySectionDetails extends React.Component {
     return highestOffer;
   }
 
-  getSectionDetails = () => {
-    if (!this.props.sectionId || !this.props.offerRef || !this.props.sectionsObj || !this.props.owner || !this.props.ask) {
+  getTileDetails = () => {
+    if (!this.props.tileId || !this.props.offerRef || !this.props.tilesObj || !this.props.owner || !this.props.ask) {
       return;
     }
 
     const { MosaicMarket } = this.props.drizzleState.contracts;
-    const offers = MosaicMarket.getOffersForSection[this.props.offerRef];
+    const offers = MosaicMarket.getOffersForTile[this.props.offerRef];
     const owner = MosaicMarket.getOwner[this.props.owner];
     const ask = MosaicMarket.getAsk[this.props.ask];
-    const secObj = this.props.sectionsObj[this.props.sectionId];
+    const secObj = this.props.tilesObj[this.props.tileId];
     let highestOffer = this.highestOffer(offers);
     
       return (
         <div>
           <div className="center">
-            <p>Section details for section {this.props.sectionId}</p>
+            <p>Tile details for tile {this.props.tileId}</p>
             {this.getPicture(secObj)}
             {this.getOwner(secObj)}
             {this.getAsk(secObj)}
             {this.getOffer(highestOffer)}
           </div>
-          <GetUnclaimedSection
+          <GetUnclaimedTile
             drizzle={this.props.drizzle}
             drizzleState={this.props.drizzleState}
-            sectionId={this.props.sectionId}
+            tileId={this.props.tileId}
             owner={owner && owner.value}
-            sectionsObj={this.props.sectionsObj[this.props.sectionId]}
+            tilesObj={this.props.tilesObj[this.props.tileId]}
           />
           <SetOffer
             drizzle={this.props.drizzle}
             drizzleState={this.props.drizzleState}
-            sectionId={this.props.sectionId}
+            tileId={this.props.tileId}
             owner={owner && owner.value}
             ask={ask && ask.value}
-            sectionsObj={secObj}
+            tilesObj={secObj}
           />
           <SetColor
             drizzle={this.props.drizzle}
             drizzleState={this.props.drizzleState}
-            sectionId={this.props.sectionId}
+            tileId={this.props.tileId}
             owner={owner && owner.value} 
-            sectionsObj={secObj}
+            tilesObj={secObj}
           />
           <SetAsk
             drizzle={this.props.drizzle}
             drizzleState={this.props.drizzleState}
-            sectionId={this.props.sectionId}
+            tileId={this.props.tileId}
             owner={owner && owner.value}
             ask={ask && ask.value}
             highestOffer={highestOffer}
-            sectionsObj={secObj}
+            tilesObj={secObj}
           />
 
         </div>
@@ -124,10 +124,10 @@ class DisplaySectionDetails extends React.Component {
   render() {
     return (
       <div>
-        <div>{this.getSectionDetails()}</div>
+        <div>{this.getTileDetails()}</div>
       </div>
     );
   }
 }
 
-export default DisplaySectionDetails;
+export default DisplayTileDetails;

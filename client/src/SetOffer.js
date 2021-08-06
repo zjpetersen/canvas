@@ -24,7 +24,7 @@ class SetOffer extends React.Component {
     const { drizzle, drizzleState } = this.props;
     const contract = drizzle.contracts.MosaicMarket;
     console.log("Removing offer");
-    const stackId = contract.methods["removeOffer"].cacheSend(this.props.sectionId, {
+    const stackId = contract.methods["removeOffer"].cacheSend(this.props.tileId, {
       from: drizzleState.accounts[0]
     });
 
@@ -39,7 +39,7 @@ class SetOffer extends React.Component {
     let amount = Web3.utils.toWei(this.state.amount);
     console.log(amount);
     //TODO more testing to check for nonce error
-    const stackId = contract.methods["offer"].cacheSend(this.props.sectionId, {
+    const stackId = contract.methods["offer"].cacheSend(this.props.tileId, {
       from: drizzleState.accounts[0],
       value: amount
     });
@@ -59,16 +59,16 @@ class SetOffer extends React.Component {
 
     //TODO if the owner changes, need to update the ask to has not been set
       if (this.state.amount !== '') {
-          let ask = this.props.sectionsObj.ask;
+          let ask = this.props.tilesObj.ask;
           if (ask && ask !== '' && ask === Web3.utils.toWei(this.state.amount)) {
-              this.props.sectionsObj.ask = '0';
-              this.props.sectionsObj.owner = this.props.drizzleState.accounts[0];
+              this.props.tilesObj.ask = '0';
+              this.props.tilesObj.owner = this.props.drizzleState.accounts[0];
           }
       } 
 
     // otherwise, return the transaction status
     let msg = `Transaction status: ${transactions[txHash] && transactions[txHash].status}`;
-    this.setState({stackId: null, sectionId: '', amount: ''});
+    this.setState({stackId: null, tileId: '', amount: ''});
     return msg;
   };
 

@@ -8,8 +8,8 @@ class SetColor extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = { sectionId: '', color: '', stackId: null, imageDisplayed: false, hex: '' };
-    this.handleChangeSectionId = this.handleChangeSectionId.bind(this);
+    this.state = { tileId: '', color: '', stackId: null, imageDisplayed: false, hex: '' };
+    this.handleChangeTileId = this.handleChangeTileId.bind(this);
     this.handleChangeColor = this.handleChangeColor.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.displayColor = this.displayColor.bind(this);
@@ -20,8 +20,8 @@ class SetColor extends React.Component {
     this.readFile = this.readFile.bind(this);
   }
 
-  handleChangeSectionId(event) {
-    this.setState({ sectionId: event.target.value });
+  handleChangeTileId(event) {
+    this.setState({ tileId: event.target.value });
   }
 
   handleChangeColor(event) {
@@ -33,7 +33,7 @@ class SetColor extends React.Component {
     const contract = drizzle.contracts.MosaicMarket;
 
     let hex = this.bytesToHex(this.state.color);
-    const stackId = contract.methods["setColorBytes"].cacheSend(this.props.sectionId, hex, {
+    const stackId = contract.methods["setColorBytes"].cacheSend(this.props.tileId, hex, {
       from: drizzleState.accounts[0]
     });
 
@@ -58,11 +58,11 @@ class SetColor extends React.Component {
 
     // if transaction hash does not exist, don't display anything
     if (!txHash) return null;
-    this.props.sectionsObj.color = this.state.hex;
+    this.props.tilesObj.color = this.state.hex;
 
     // otherwise, return the transaction status
     let msg = `Transaction status: ${transactions[txHash] && transactions[txHash].status}`;
-    this.setState({stackId: null, sectionId: ''});
+    this.setState({stackId: null, tileId: ''});
     return msg;
   };
 
@@ -72,37 +72,12 @@ class SetColor extends React.Component {
     }
     let result = <div className="center">
       <button className="basic" type="button" onClick={() => this.handleSubmit()}>Update Color</button>
-      {/* <form onSubmit={this.handleSubmit}>
-        <label> Section id:
-                <input
-            name="sectionId"
-            type="text"
-            value={this.state.sectionId}
-            onChange={this.handleChangeSectionId} />
-        </label>
-        <br />
-        <input type="submit" value="Submit" />
-      </form> */}
       <div>{this.getTxStatus()}</div>
       <br />
       <br />
     </div>;
     return result;
   }
-
-  // bytesToBase64(bytes) {
-  //   let binary = '';
-  //   let len = bytes.byteLength;
-  //   for (var i = 0; i < len; i++) {
-  //       binary += String.fromCharCode( bytes[ i ] );
-  //   }
-  //   console.log(binary);
-  //   let result = Base64.encode(binary);
-  //   //TODO fix encoding issue
-  //   console.log(result);
-  //   return Base64.encode(binary);
-  //   // return window.btoa(binary);
-  // }
 
   dataUrlFromInt8Array(int8array) {
     let uint = Uint8Array.from(int8array);

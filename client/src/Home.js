@@ -66,7 +66,7 @@ class Home extends React.Component {
             <ol>
               <li>Install the Chrome extension <a href="https://metamask.io/">MetaMask</a>.</li>
               <li>Send some Ethereum to your MetaMask wallet.  For example, from your Coinbase wallet.</li>
-              <li>Navigate to the <a href="/canvas">Mosaic</a> and purchase a section you're interested in!</li>
+              <li>Navigate to the <a href="/canvas">Mosaic</a> and purchase a tile you're interested in!</li>
             </ol>
           
           <h2>Other technical details</h2>
