@@ -14,9 +14,13 @@ class DisplayCanvas extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = { tilesArray: null, tiles: null, canvas: null, currentTileId: null, tileOffers: null, owner: null, ask: null};
+    this.state = { tilesArray: null, tiles: null, canvas: null, currentTileId: null, tileOffers: null, owner: null, ask: null, highlightTile: null, showUtilities: false, noOwnedTiles: false};
     this.setCurrentTile = this.setCurrentTile.bind(this);
     this.getColor = this.getColor.bind(this);
+    this.highlightTile = this.highlightTile.bind(this);
+    this.highlightOwnedTiles = this.highlightOwnedTiles.bind(this);
+    this.clearHighlights = this.clearHighlights.bind(this);
+    this.showUtilities = this.showUtilities.bind(this);
     this.loading = this.loading.bind(this);
 
   }
@@ -73,15 +77,28 @@ class DisplayCanvas extends React.Component {
       if (imgSrc.startsWith('0x') && imgSrc.length > 2) {
         imgSrc = convertToDataUrl(imgSrc);
       }
+      let id = "canvasElement";
+      let imgId = "canvasImg";
+      if (this.state.highlightTile) {
+        if (this.state.highlightTile.includes(i)) {
+          //Only want to highlight div if the image is empty
+          if (!imgSrc.startsWith("data:image")) {
+            id = "canvasElementHighlight";
+          }
+          imgId = "canvasImgHighlight";
+        } else {
+          id = "canvasElementGray";
+        }
+      }
       if (imgSrc.startsWith("data:image")) {
-        let image = <img id="canvasImg" src={imgSrc} alt="Tile"/>
-        row.push(<div id="canvasElement" key={i} onClick={() => this.setCurrentTile(i)}>{image}</div>);
+        let image = <img id={imgId} src={imgSrc} alt="Tile"/>
+        row.push(<div id={id} key={i} onClick={() => this.setCurrentTile(i)}>{image}</div>);
       } else {
         let style = {
           backgroundColor: this.getColor(tile, i),
           // border: "1px solid #383838"
         }
-        row.push(<div id="canvasElement" key={i} style={style} onClick={() => this.setCurrentTile(i)} />);
+        row.push(<div id={id} key={i} style={style} onClick={() => this.setCurrentTile(i)} />);
       }
 
     }
@@ -96,6 +113,110 @@ class DisplayCanvas extends React.Component {
         <img id="loading" src={loadingGif} alt="Loading"/>
       </div>;
   }
+
+  /************ Mosaic Utility Functions */
+
+  handleHighlightTileChangeAmount(event) {
+    this.setState({highlightTilePending: event.target.value });
+  }
+
+  handleHighlightTileSubmit(event) {
+      event.preventDefault();
+    this.setState({highlightTile: [Number(this.state.highlightTilePending)]});
+    console.log("Highlight tile: " + [this.state.highlightTilePending]); 
+  }
+
+  handleHighlightOwnedTilesSubmit(event) {
+    const { drizzleState } = this.props;
+    let toHighlight = [];
+
+    let tiles = this.state.tilesArray;
+    for (let i = 0; i < tiles.length; i++) {
+      if (tiles[i].owner === drizzleState.accounts[0]) {
+        toHighlight.push(i);
+      }
+    }
+
+    console.log(toHighlight);
+    if (toHighlight.length !== 0) {
+      this.setState({highlightTile: toHighlight, noOwnedTiles: false});
+    } else {
+      this.setState({noOwnedTiles: true});
+    }
+  }
+
+  handleClearHighlightsSubmit(event) {
+    this.setState({highlightTile: null});
+  }
+
+  handleShowUtilities(event) {
+    this.setState({showUtilities: !this.state.showUtilities});
+  }
+
+  highlightTile = () => {
+    return <div className="util">
+      <form onSubmit={(event) => this.handleHighlightTileSubmit(event)}>
+        <label> Highlight Tile:
+                <input
+            name="tile"
+            type="number"
+            step="1"
+            min="0"
+            max="7055"
+            value={this.state.amount}
+            onChange={(event) => this.handleHighlightTileChangeAmount(event)} />
+        </label>
+        <input className="margin" type="submit" value="Submit" />
+      </form>
+    </div>
+
+  }
+
+  highlightOwnedTiles = () => {
+    let errorMsg;
+    if (this.state.noOwnedTiles) {
+      alert("No owned tiles! ");
+      this.setState({noOwnedTiles: false});
+    }
+        return <div className="util">
+          <button className="small" type="button" onClick={(event) => this.handleHighlightOwnedTilesSubmit(event)}>Highlight Owned Tiles</button>
+        </div>
+  }
+  
+  clearHighlights = () => {
+    if (this.state.highlightTile) {
+        return <div className="util">
+          <button className="small" type="button" onClick={() => this.handleClearHighlightsSubmit()}>Clear Highlights</button>
+        </div>
+    }
+  }
+
+  showUtilities = () => {
+        let msg = !this.state.showUtilities ? "Show Utilities" : "Hide Utilities";
+        return <div className="util">
+          <button className="small" type="button" onClick={() => this.handleShowUtilities()}>{msg}</button>
+        </div>
+  }
+
+  mosaicUtilites = () => {
+    if (!this.state.tilesArray) {
+      return;
+    }
+    if (!this.state.showUtilities) {
+      return <div id="mosaicUtils" className="left">
+        {this.showUtilities()}
+      </div>
+    }
+    return <div id="mosaicUtils" className="left">
+      {this.showUtilities()}
+      {this.highlightTile()}
+      {this.highlightOwnedTiles()}
+      {this.clearHighlights()}
+    </div>
+
+  }
+
+  /**********End Mosaic Utility Functions */
 
   buildCanvas = () => {
     if (!this.state.tilesArray) {
@@ -125,6 +246,8 @@ class DisplayCanvas extends React.Component {
       <div id="center">
         <h2>Canvas</h2>
         {this.buildCanvas()}
+        {this.mosaicUtilites()}
+
         
         <DisplayTileDetails
           drizzle={this.props.drizzle}
