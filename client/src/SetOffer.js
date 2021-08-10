@@ -22,7 +22,7 @@ class SetOffer extends React.Component {
 
   handleRemoveSubmit(event) {
     const { drizzle, drizzleState } = this.props;
-    const contract = drizzle.contracts.MosaicMarket;
+    const contract = drizzle.contracts.MosaicTiles;
     console.log("Removing offer");
     const stackId = contract.methods["removeOffer"].cacheSend(this.props.tileId, {
       from: drizzleState.accounts[0]
@@ -34,7 +34,7 @@ class SetOffer extends React.Component {
   handleSubmit(event) {
       event.preventDefault();
     const { drizzle, drizzleState } = this.props;
-    const contract = drizzle.contracts.MosaicMarket;
+    const contract = drizzle.contracts.MosaicTiles;
     console.log("Submitting number" + this.state.amount);
     let amount = Web3.utils.toWei(this.state.amount);
     console.log(amount);

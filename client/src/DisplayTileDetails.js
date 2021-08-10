@@ -65,16 +65,19 @@ class DisplayTileDetails extends React.Component {
   }
 
   getTileDetails = () => {
-    if (!this.props.offerRef || !this.props.tilesObj || !this.props.owner || !this.props.ask) {
+    if (!this.props.tilesObj || !this.props.owner) {
       return;
     }
+    // if (!this.props.offerRef || !this.props.tilesObj || !this.props.owner || !this.props.ask) {
+    //   return;
+    // }
 
-    const { MosaicMarket } = this.props.drizzleState.contracts;
-    const offers = MosaicMarket.getOffersForTile[this.props.offerRef];
-    const owner = MosaicMarket.getOwner[this.props.owner];
-    const ask = MosaicMarket.getAsk[this.props.ask];
+    const { MosaicTiles } = this.props.drizzleState.contracts;
+    // const offers = MosaicTiles.getOffersForTile[this.props.offerRef];
+    const owner = MosaicTiles.getOwner[this.props.owner];
+    // const ask = MosaicTiles.getAsk[this.props.ask];
     const secObj = this.props.tilesObj[this.props.tileId];
-    let highestOffer = this.highestOffer(offers);
+    // let highestOffer = this.highestOffer(offers);
     
       return (
         <div>
@@ -82,8 +85,8 @@ class DisplayTileDetails extends React.Component {
             <p>Tile details for tile {this.props.tileId}</p>
             {this.getPicture(secObj)}
             {this.getOwner(secObj)}
-            {this.getAsk(secObj)}
-            {this.getOffer(highestOffer)}
+            {/* {this.getAsk(secObj)} */}
+            {/* {this.getOffer(highestOffer)} */}
           </div>
           <GetUnclaimedTile
             drizzle={this.props.drizzle}
@@ -92,14 +95,14 @@ class DisplayTileDetails extends React.Component {
             owner={owner && owner.value}
             tilesObj={secObj}
           />
-          <SetOffer
+          {/* <SetOffer
             drizzle={this.props.drizzle}
             drizzleState={this.props.drizzleState}
             tileId={this.props.tileId}
             owner={owner && owner.value}
             ask={ask && ask.value}
             tilesObj={secObj}
-          />
+          /> */}
           <SetColor
             drizzle={this.props.drizzle}
             drizzleState={this.props.drizzleState}
@@ -107,7 +110,7 @@ class DisplayTileDetails extends React.Component {
             owner={owner && owner.value} 
             tilesObj={secObj}
           />
-          <SetAsk
+          {/* <SetAsk
             drizzle={this.props.drizzle}
             drizzleState={this.props.drizzleState}
             tileId={this.props.tileId}
@@ -115,7 +118,7 @@ class DisplayTileDetails extends React.Component {
             ask={ask && ask.value}
             highestOffer={highestOffer}
             tilesObj={secObj}
-          />
+          /> */}
 
         </div>
       );

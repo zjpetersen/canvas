@@ -21,6 +21,7 @@ class DisplayCanvas extends React.Component {
     this.highlightOwnedTiles = this.highlightOwnedTiles.bind(this);
     this.clearHighlights = this.clearHighlights.bind(this);
     this.showUtilities = this.showUtilities.bind(this);
+    // this.withdrawFunds = this.withdrawFunds.bind(this);
     this.loading = this.loading.bind(this);
 
   }
@@ -36,14 +37,17 @@ class DisplayCanvas extends React.Component {
 
   setCurrentTile(i) {
     const { drizzle } = this.props;
-    const canvas = drizzle.contracts.MosaicMarket;
+    const canvas = drizzle.contracts.MosaicTiles;
 
     // let drizzle know we want to call the `checkTile` method with `value`
     const owner = canvas.methods["getOwner"].cacheCall(i);
-    const ask= canvas.methods["getAsk"].cacheCall(i);
-    const offerRef = canvas.methods["getOffersForTile"].cacheCall(i);
+    //TODO get ask and offers from opensea
+    // const ask= canvas.methods["getAsk"].cacheCall(i);
+    // const offerRef = canvas.methods["getOffersForTile"].cacheCall(i);
 
-    this.setState({currentTileId : i, tileOffers: offerRef, owner: owner, ask: ask});
+    // this.setState({currentTileId : i, tileOffers: offerRef, owner: owner, ask: ask});
+
+    this.setState({currentTileId : i, owner: owner});
   }
 
   hexToRgb(hex) {
@@ -149,6 +153,17 @@ class DisplayCanvas extends React.Component {
     this.setState({highlightTile: null});
   }
 
+  // handleWithdrawSubmit(event) {
+  //   const { drizzle, drizzleState } = this.props;
+  //   const contract = drizzle.contracts.MosaicMarket;
+  //   const stackId = contract.methods["withdraw"].cacheSend({
+  //     from: drizzleState.accounts[0]
+  //   });
+
+  //   this.setState({ stackId });
+
+  // }
+
   handleShowUtilities(event) {
     this.setState({showUtilities: !this.state.showUtilities});
   }
@@ -191,6 +206,12 @@ class DisplayCanvas extends React.Component {
     }
   }
 
+  // withdrawFunds = () => {
+  //   return <div className="util">
+  //     <button className="small" type="button" onClick={() => this.handleWithdrawSubmit()}>Withdraw funds</button>
+  //   </div>
+  // }
+
   showUtilities = () => {
         let msg = !this.state.showUtilities ? "Show Utilities" : "Hide Utilities";
         return <div className="util">
@@ -212,6 +233,7 @@ class DisplayCanvas extends React.Component {
       {this.highlightTile()}
       {this.highlightOwnedTiles()}
       {this.clearHighlights()}
+      {/* {this.withdrawFunds()} */}
     </div>
 
   }
