@@ -23,7 +23,9 @@ class DisplayTileDetails extends React.Component {
   getPicture = (tile) => {
     if (tile) {
       let imgSrc = tile.color;
-      if (imgSrc.startsWith('0x') && imgSrc.length > 2) {
+      if (tile.invalidColor) {
+        return <p style={{color:"red"}}>Image: An invalid image was uploaded.  Please reupload a 16x16 png image.</p>
+      } else if (imgSrc.startsWith('0x') && imgSrc.length > 2) {
         imgSrc = convertToDataUrl(imgSrc);
       }
       if (imgSrc.startsWith("data:image")) {

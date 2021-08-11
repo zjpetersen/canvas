@@ -86,7 +86,7 @@ class DisplayCanvas extends React.Component {
       if (this.state.highlightTile) {
         if (this.state.highlightTile.includes(i)) {
           //Only want to highlight div if the image is empty
-          if (!imgSrc.startsWith("data:image")) {
+          if (!imgSrc.startsWith("data:image") && !tile.invalidColor) {
             id = "canvasElementHighlight";
           }
           imgId = "canvasImgHighlight";
@@ -94,9 +94,14 @@ class DisplayCanvas extends React.Component {
           id = "canvasElementGray";
         }
       }
-      if (imgSrc.startsWith("data:image")) {
-        let image = <img id={imgId} src={imgSrc} alt="Tile"/>
-        row.push(<div id={id} key={i} onClick={() => this.setCurrentTile(i)}>{image}</div>);
+      if (tile.invalidColor) {
+          //Error image
+          imgSrc = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAHFJREFUOI29krENwCAMBJ+IiajoWSFjZgV6V6yUVEYowQ8SKNcC/2cAIFwh3GwdAA52OMc4DDEDZnGsXUkiOEvp7l02+AS07UkEAMDuYq/Be/YWy2KfAWtnFtRgFFgDrHZ9BWaxbOBmZu+hv9Nbqr/xAJb7NyqaUbClAAAAAElFTkSuQmCC";
+          let image = <img id={imgId} src={imgSrc} alt="Tile"/>
+          row.push(<div id={id} key={i} onClick={() => this.setCurrentTile(i)}>{image}</div>);
+      } else if (imgSrc.startsWith("data:image")) {
+          let image = <img id={imgId} src={imgSrc} alt="Tile"/>
+          row.push(<div id={id} key={i} onClick={() => this.setCurrentTile(i)}>{image}</div>);
       } else {
         let style = {
           backgroundColor: this.getColor(tile, i),

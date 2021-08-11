@@ -67,7 +67,7 @@ class SetColor extends React.Component {
   };
 
   updateColor = () => {
-    if (this.state.color === '') {
+    if (this.state.color === '' || !this.state.imageDisplayed) {
       return;
     }
     let result = <div className="center">
@@ -94,22 +94,28 @@ class SetColor extends React.Component {
     let imgSrc = this.dataUrlFromInt8Array(this.state.color);
 
     let i = new Image();
-    i.onload = function() {
-      console.log(i.naturalWidth);
+    //TODO would be better to handle this with normal react jsx
+    let picDiv = document.getElementById("pic");
+    i.onload = () => {
       if (i.naturalWidth !== 16 || i.naturalHeight !== 16) {
-        //TODO handle error
-        console.log("Error, width and height must both be 16 px");
-        // this.setState({color : ''});
-        // return <div class="alert">
-        //     <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
-        //     <strong>Error:</strong> Width and height must both be 16 pixels.
-        //   </div>;
+        if (picDiv.hasChildNodes()) {
+          picDiv.removeChild(picDiv.firstChild);
+        }
+        let error = document.createTextNode("Error, width and height must both be 16 px");
+        picDiv.appendChild(error);
+        this.setState({color : ''});
+
+      } else {
+        this.setState({imageDisplayed: true});
+        picDiv.appendChild(i);
+
       }
     }
     i.src = imgSrc;
-    let picDiv = document.getElementById("pic");
-    console.log(picDiv);
-    picDiv.appendChild(i);
+    if (picDiv.hasChildNodes()) {
+      picDiv.removeChild(picDiv.firstChild);
+    }
+    // picDiv.appendChild(i);
     return;
 
   }
@@ -126,19 +132,13 @@ class SetColor extends React.Component {
     reader.onload = async (e) => {
       const buffer = (e.target.result)
       let expectedColor = new Int8Array(buffer);
-      // let x;
-      // for (let i = 0; i < expectedColor.length; i++) {
-      //   x += expectedColor[i] + ",";
-      // }
-      // console.log(x);
-      // console.log(expectedColor);
+
+      this.setState({imageDisplayed: false});
       this.setState({ color: expectedColor});
     this.displayColor();
     };
     // reader.readAsDataURL(e.target.files[0])
-    console.log(e.target);
     let file = e.target.files[0];
-    console.log(file);
     reader.readAsArrayBuffer(file);
 
   }
