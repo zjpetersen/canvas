@@ -94,7 +94,7 @@ class DisplayCanvas extends React.Component {
           id = "canvasElementGray";
         }
       }
-      if (tile.invalidColor) {
+      if (tile.updatedColor && tile.invalidColor) {
           //Error image
           imgSrc = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAHFJREFUOI29krENwCAMBJ+IiajoWSFjZgV6V6yUVEYowQ8SKNcC/2cAIFwh3GwdAA52OMc4DDEDZnGsXUkiOEvp7l02+AS07UkEAMDuYq/Be/YWy2KfAWtnFtRgFFgDrHZ9BWaxbOBmZu+hv9Nbqr/xAJb7NyqaUbClAAAAAElFTkSuQmCC";
           let image = <img id={imgId} src={imgSrc} alt="Tile"/>

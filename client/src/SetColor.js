@@ -9,20 +9,17 @@ class SetColor extends React.Component {
   constructor(props) {
     super(props);
     this.state = { tileId: '', color: '', stackId: null, imageDisplayed: false, hex: '' };
-    this.handleChangeTileId = this.handleChangeTileId.bind(this);
     this.handleChangeColor = this.handleChangeColor.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.displayColor = this.displayColor.bind(this);
     this.updateColor = this.updateColor.bind(this);
+    this.getTxStatus = this.getTxStatus.bind(this);
     this.dataUrlFromInt8Array = this.dataUrlFromInt8Array.bind(this);
     this.bytesToHex = this.bytesToHex.bind(this);
     this.setColor = this.setColor.bind(this);
     this.readFile = this.readFile.bind(this);
   }
 
-  handleChangeTileId(event) {
-    this.setState({ tileId: event.target.value });
-  }
 
   handleChangeColor(event) {
     this.setState({ color: event.target.value });
@@ -58,12 +55,15 @@ class SetColor extends React.Component {
 
     // if transaction hash does not exist, don't display anything
     if (!txHash) return null;
-    this.props.tilesObj.color = this.state.hex;
 
-    // otherwise, return the transaction status
-    let msg = `Transaction status: ${transactions[txHash] && transactions[txHash].status}`;
-    this.setState({stackId: null, tileId: ''});
-    return msg;
+    // otherwise, update the color if success
+    if (transactions[txHash] && transactions[txHash].status === 'success') {
+      this.props.tilesObj.color = this.state.hex;
+      this.setState({stackId: null});
+    } else if (transactions[txHash] && transactions[txHash].status === 'error') {
+      this.setState({stackId: null});
+    }
+    return null;
   };
 
   updateColor = () => {
@@ -144,6 +144,16 @@ class SetColor extends React.Component {
   }
 
   setColor() {
+    //Check if clicked on new tile
+    //TODO this gives a warning...
+    if (this.state.tileId === '' || (this.state.tileId !== '' && this.state.tileId !== this.props.tileId)) {
+      console.log("Clicked on new tile");
+      this.setState({tileId: this.props.tileId, color: '', hex: '', stackId: null, imageDisplayed: false});
+      let picDiv = document.getElementById("pic");
+      if (picDiv && picDiv.hasChildNodes()) {
+       picDiv.removeChild(picDiv.firstChild);
+      }
+    }
     if (!this.props.owner || !this.props.drizzleState.accounts || this.props.owner !== this.props.drizzleState.accounts[0]) {
       return;
     }

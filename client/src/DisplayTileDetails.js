@@ -2,8 +2,6 @@ import React from "react";
 import Web3 from "web3";
 import GetUnclaimedTile from "./GetUnclaimedTile";
 import SetColor from "./SetColor";
-import SetAsk from "./SetAsk";
-import SetOffer from "./SetOffer";
 import {convertToDataUrl} from './Utils';
 
 class DisplayTileDetails extends React.Component {
@@ -23,7 +21,7 @@ class DisplayTileDetails extends React.Component {
   getPicture = (tile) => {
     if (tile) {
       let imgSrc = tile.color;
-      if (tile.invalidColor) {
+      if (tile.updatedColor && tile.invalidColor) {
         return <p style={{color:"red"}}>Image: An invalid image was uploaded.  Please reupload a 16x16 png image.</p>
       } else if (imgSrc.startsWith('0x') && imgSrc.length > 2) {
         imgSrc = convertToDataUrl(imgSrc);
@@ -70,16 +68,8 @@ class DisplayTileDetails extends React.Component {
     if (!this.props.tilesObj || !this.props.owner) {
       return;
     }
-    // if (!this.props.offerRef || !this.props.tilesObj || !this.props.owner || !this.props.ask) {
-    //   return;
-    // }
 
-    const { MosaicTiles } = this.props.drizzleState.contracts;
-    // const offers = MosaicTiles.getOffersForTile[this.props.offerRef];
-    const owner = MosaicTiles.getOwner[this.props.owner];
-    // const ask = MosaicTiles.getAsk[this.props.ask];
     const secObj = this.props.tilesObj[this.props.tileId];
-    // let highestOffer = this.highestOffer(offers);
     
       return (
         <div>
@@ -87,41 +77,21 @@ class DisplayTileDetails extends React.Component {
             <p>Tile details for tile {this.props.tileId}</p>
             {this.getPicture(secObj)}
             {this.getOwner(secObj)}
-            {/* {this.getAsk(secObj)} */}
-            {/* {this.getOffer(highestOffer)} */}
           </div>
           <GetUnclaimedTile
             drizzle={this.props.drizzle}
             drizzleState={this.props.drizzleState}
             tileId={this.props.tileId}
-            owner={owner && owner.value}
+            owner={secObj && secObj.owner}
             tilesObj={secObj}
           />
-          {/* <SetOffer
-            drizzle={this.props.drizzle}
-            drizzleState={this.props.drizzleState}
-            tileId={this.props.tileId}
-            owner={owner && owner.value}
-            ask={ask && ask.value}
-            tilesObj={secObj}
-          /> */}
           <SetColor
             drizzle={this.props.drizzle}
             drizzleState={this.props.drizzleState}
             tileId={this.props.tileId}
-            owner={owner && owner.value} 
+            owner={secObj && secObj.owner} 
             tilesObj={secObj}
           />
-          {/* <SetAsk
-            drizzle={this.props.drizzle}
-            drizzleState={this.props.drizzleState}
-            tileId={this.props.tileId}
-            owner={owner && owner.value}
-            ask={ask && ask.value}
-            highestOffer={highestOffer}
-            tilesObj={secObj}
-          /> */}
-
         </div>
       );
   }

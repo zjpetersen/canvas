@@ -5,14 +5,10 @@ class GetUnclaimedTile extends React.Component {
   state = { stackId: null , tileId: ''};
   constructor(props) {
     super(props);
-    this.handleChangeTileId = this.handleChangeTileId.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.getUnclaimedTile = this.getUnclaimedTile.bind(this);
   }
 
-  handleChangeTileId(event) {
-      this.setState({tileId: this.props.tileId});
-  }
 
   handleSubmit(event) {
     const { drizzle, drizzleState } = this.props;
@@ -21,7 +17,7 @@ class GetUnclaimedTile extends React.Component {
     const stackId = contract.methods["mintTile"].cacheSend(this.props.tileId, {
       from: drizzleState.accounts[0]
     });
-
+    
     this.setState({ stackId });
   }
 
@@ -34,13 +30,16 @@ class GetUnclaimedTile extends React.Component {
 
     // if transaction hash does not exist, don't display anything
     if (!txHash) return null;
-    this.props.tilesObj.owner = this.props.drizzleState.accounts[0];
-    this.props.tilesObj.hasOwner = true;
 
-    // otherwise, return the transaction status
-    let msg = `Transaction status: ${transactions[txHash] && transactions[txHash].status}`;
-    this.setState({stackId: null, tileId: ''});
-    return msg;
+    //If success update the owner, otherwise if error just reset the stack id
+    if (transactions[txHash] && transactions[txHash].status === 'success') {
+      this.props.tilesObj.owner = this.props.drizzleState.accounts[0];
+      this.props.tilesObj.hasOwner = true;
+      this.setState({stackId: null});
+    } else if (transactions[txHash] && transactions[txHash].status === 'error') {
+      this.setState({stackId: null});
+    }
+    return null;
   };
 
   getUnclaimedTile = () => {
