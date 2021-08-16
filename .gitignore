@@ -3,7 +3,7 @@
 node_modules/
 client/src/contracts/
 client/README.md
-client/public/
+# client/public/
 client/node_modules/
 client/.pnp
 client/.pnp.js
