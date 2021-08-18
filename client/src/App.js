@@ -15,33 +15,40 @@ class App extends React.Component {
   componentDidMount() {
     const { drizzle } = this.props;
 
-    // subscribe to changes in the store
-    this.unsubscribe = drizzle.store.subscribe(() => {
+    if (drizzle) {
+      // subscribe to changes in the store
+      this.unsubscribe = drizzle.store.subscribe(() => {
 
-      // every time the store updates, grab the state from drizzle
-      const drizzleState = drizzle.store.getState();
+        // every time the store updates, grab the state from drizzle
+        const drizzleState = drizzle.store.getState();
 
-      if (drizzleState.web3) {
-        this.setState({web3: drizzleState.web3});
-      }
+        if (drizzleState.web3) {
+          this.setState({ web3: drizzleState.web3 });
+        }
 
-      // check to see if it's ready, if so, update local component state
-      if (drizzleState.drizzleStatus.initialized) {
-        this.setState({ loading: false, drizzleState: drizzleState, web3: drizzleState.web3 });
-      }
-      
-      //Should reload the page if the account or network is changed
+        // check to see if it's ready, if so, update local component state
+        if (drizzleState.drizzleStatus.initialized) {
+          this.setState({ loading: false, drizzleState: drizzleState, web3: drizzleState.web3 });
+        }
+
+      });
+    }
+
+    //Should reload the page if the account or network is changed
+    if (window.ethereum) {
       window.ethereum.on('accountsChanged', (accounts) => {
         window.location.reload();
       });
       window.ethereum.on('networkChanged', (networkId) => {
         window.location.reload();
       });
-    });
+    }
   }
 
   componentWillUnmount() {
-    this.unsubscribe();
+    if (this.unsubscribe) {
+      this.unsubscribe();
+    } 
   }
 
   render() {
@@ -55,12 +62,26 @@ class App extends React.Component {
           <p>This browser has no connection to the Ethereum network. Please use the Chrome/FireFox extension MetaMask, or dedicated Ethereum browsers Mist or Parity.</p>
         </main>
       )
-    }
-    if (!this.state.loading) {
+    } else if (this.props.networkId && (this.props.networkId !== 1 && this.props.networkId !== 4 && this.props.networkId !== 5777) ) {
+      return (
+        <main>
+          <h1>⚠️</h1>
+          <p>This dapp only supports connecting to Mainnet and Rinkeby.  Please change your network to get the full experience.</p>
+        <Router>
+          <div className="App">
+            <Navigation displayCanvas={false}/>
+            <Switch> 
+              <Route exact path='/' ><Home drizzle={this.props.drizzle} drizzleState={this.state.drizzleState}/></Route>
+            </Switch>
+          </div>
+        </Router>
+        </main>
+      )
+    } else if (!this.state.loading) { //TODO check if metamask is enabled, and pass that as a variable to enable/disable features
       return (
         <Router>
           <div className="App">
-            <Navigation />
+            <Navigation displayCanvas={true}/>
             <Switch> {/* The Switch decides which component to show based on the current URL.*/}
               {/* <Route exact path='/' component={Main}></Route>
           <Route exact path='/bonus' component={SetColor drizzle={this.props.drizzle} drizzleState={this.props.drizzleState}}></Route> */}
