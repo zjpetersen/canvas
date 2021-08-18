@@ -84,6 +84,7 @@ class DisplayTileDetails extends React.Component {
             tileId={this.props.tileId}
             owner={secObj && secObj.owner}
             tilesObj={secObj}
+            isMetaMask={this.props.isMetaMask}
           />
           <SetColor
             drizzle={this.props.drizzle}
@@ -91,6 +92,7 @@ class DisplayTileDetails extends React.Component {
             tileId={this.props.tileId}
             owner={secObj && secObj.owner} 
             tilesObj={secObj}
+            isMetaMask={this.props.isMetaMask}
           />
         </div>
       );

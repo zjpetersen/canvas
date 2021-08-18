@@ -144,6 +144,9 @@ class SetColor extends React.Component {
   }
 
   setColor() {
+    if (!this.props.isMetaMask) {
+      return;
+    }
     //Check if clicked on new tile
     //TODO this gives a warning...
     if (this.state.tileId === '' || (this.state.tileId !== '' && this.state.tileId !== this.props.tileId)) {

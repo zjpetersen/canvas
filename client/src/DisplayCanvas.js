@@ -193,6 +193,9 @@ class DisplayCanvas extends React.Component {
   }
 
   highlightOwnedTiles = () => {
+    if (!this.props.isMetaMask) {
+      return;
+    }
     let errorMsg;
     if (this.state.noOwnedTiles) {
       alert("No owned tiles! ");
@@ -284,6 +287,7 @@ class DisplayCanvas extends React.Component {
           offerRef={this.state.tileOffers}
           owner={this.state.owner}
           ask={this.state.ask}
+          isMetaMask={this.props.isMetaMask}
         />
       </div>
     );

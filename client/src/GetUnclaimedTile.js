@@ -46,6 +46,11 @@ class GetUnclaimedTile extends React.Component {
     if (!this.props.tilesObj || this.props.owner !== '0x0000000000000000000000000000000000000000') {
       return;
     }
+    if (!this.props.isMetaMask) {
+      return <div className="center">
+        <p>Enable MetaMask to claim this tile!</p>
+      </div>;
+    }
 
     return <div className="center">
       <button className="basic" type="button" onClick={this.handleSubmit}>Claim Tile</button>

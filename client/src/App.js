@@ -36,6 +36,7 @@ class App extends React.Component {
 
     //Should reload the page if the account or network is changed
     if (window.ethereum) {
+      console.log(window.ethereum);
       window.ethereum.on('accountsChanged', (accounts) => {
         window.location.reload();
       });
@@ -77,7 +78,7 @@ class App extends React.Component {
         </Router>
         </main>
       )
-    } else if (!this.state.loading) { //TODO check if metamask is enabled, and pass that as a variable to enable/disable features
+    } else if (!this.state.loading) {
       return (
         <Router>
           <div className="App">
@@ -86,7 +87,7 @@ class App extends React.Component {
               {/* <Route exact path='/' component={Main}></Route>
           <Route exact path='/bonus' component={SetColor drizzle={this.props.drizzle} drizzleState={this.props.drizzleState}}></Route> */}
               <Route exact path='/' ><Home drizzle={this.props.drizzle} drizzleState={this.state.drizzleState}/></Route>
-              <Route exact path='/canvas' > <DisplayCanvas drizzle={this.props.drizzle} drizzleState={this.state.drizzleState}/></Route>
+              <Route exact path='/canvas' > <DisplayCanvas drizzle={this.props.drizzle} drizzleState={this.state.drizzleState} isMetaMask={window.ethereum && window.ethereum.isMetaMask}/></Route>
             </Switch>
           </div>
         </Router>
