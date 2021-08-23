@@ -65,7 +65,7 @@ class DisplayTileDetails extends React.Component {
   }
 
   getTileDetails = () => {
-    if (!this.props.tilesObj || !this.props.owner) {
+    if (!this.props.tilesObj) {
       return;
     }
 

@@ -67,7 +67,8 @@ div#canvasElementHighlight {
  }
 
 button.basic {
-  background-color: #9e5ba4;
+  /* background-color: #9e5ba4; */
+  background-color: #4180a0;
   border: none;
   color: white;
   padding: 16px 32px;
@@ -85,7 +86,7 @@ button.basic {
 
 }
 .small {
-  background-color: #9e5ba4;
+  background-color: #4180a0;
   border: none;
   color: white;
   padding: 8px 16px;
@@ -126,5 +127,5 @@ button.basic {
 }
 
 button.basic:hover {
-  background-color: #5a235f;
+  background-color: #32535f;
 }

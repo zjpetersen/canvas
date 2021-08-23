@@ -51,7 +51,8 @@
 /* Change the link color to #111 (black) on hover */
 #navli a:hover {
     /* color: #856f9e; */
-  background-color: rgb(255, 170, 58);
+  /* background-color: rgb(255, 170, 58); */
+  background-color: #497921;
 }
 
 /* .active {
@@ -59,5 +60,6 @@
 } */
 .current {
     /* border-bottom: 4px solid white; */
-    background-color: rgb(255, 207, 152);
+    /* background-color: rgb(255, 207, 152); */
+    background-color: #7bb24e;
 }

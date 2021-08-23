@@ -70,15 +70,16 @@ class App extends React.Component {
           <p>This dapp only supports connecting to Mainnet and Rinkeby.  Please change your network to get the full experience.</p>
         <Router>
           <div className="App">
-            <Navigation displayCanvas={false}/>
+            <Navigation displayCanvas={true}/>
             <Switch> 
               <Route exact path='/' ><Home drizzle={this.props.drizzle} drizzleState={this.state.drizzleState}/></Route>
+              <Route exact path='/canvas' > <DisplayCanvas drizzle={this.props.drizzle} drizzleState={this.state.drizzleState} isMetaMask={false}/></Route>
             </Switch>
           </div>
         </Router>
         </main>
       )
-    } else if (!this.state.loading) {
+    } else if (!this.state.loading || !this.props.hasProvider) {
       return (
         <Router>
           <div className="App">

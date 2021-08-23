@@ -28,26 +28,12 @@ class DisplayCanvas extends React.Component {
 
   componentDidMount() {
     fetchTiles(this, function (parent, data) {
-      console.log("Update tiles array");
-      console.log(data);
       parent.setState({tilesArray : data});
-      console.log(parent.state);
     });
   }
 
   setCurrentTile(i) {
-    const { drizzle } = this.props;
-    const canvas = drizzle.contracts.MosaicTiles;
-
-    // let drizzle know we want to call the `checkTile` method with `value`
-    const owner = canvas.methods["getOwner"].cacheCall(i);
-    //TODO get ask and offers from opensea
-    // const ask= canvas.methods["getAsk"].cacheCall(i);
-    // const offerRef = canvas.methods["getOffersForTile"].cacheCall(i);
-
-    // this.setState({currentTileId : i, tileOffers: offerRef, owner: owner, ask: ask});
-
-    this.setState({currentTileId : i, owner: owner});
+    this.setState({currentTileId : i});
   }
 
   hexToRgb(hex) {
@@ -64,9 +50,10 @@ class DisplayCanvas extends React.Component {
         return "#7d7d7d";
       } else {
         if (i % 10 === 0) {
-          return "#8b658f";
+          // return "#8b658f";
+          return "#4180a0";
         }
-        return "#f2eac9";
+        return "#fff8ee";
       }
   }
 
@@ -158,17 +145,6 @@ class DisplayCanvas extends React.Component {
     this.setState({highlightTile: null});
   }
 
-  // handleWithdrawSubmit(event) {
-  //   const { drizzle, drizzleState } = this.props;
-  //   const contract = drizzle.contracts.MosaicMarket;
-  //   const stackId = contract.methods["withdraw"].cacheSend({
-  //     from: drizzleState.accounts[0]
-  //   });
-
-  //   this.setState({ stackId });
-
-  // }
-
   handleShowUtilities(event) {
     this.setState({showUtilities: !this.state.showUtilities});
   }
@@ -196,7 +172,6 @@ class DisplayCanvas extends React.Component {
     if (!this.props.isMetaMask) {
       return;
     }
-    let errorMsg;
     if (this.state.noOwnedTiles) {
       alert("No owned tiles! ");
       this.setState({noOwnedTiles: false});
@@ -285,7 +260,6 @@ class DisplayCanvas extends React.Component {
           tilesObj = {this.state.tilesArray}
           tileId={this.state.currentTileId}
           offerRef={this.state.tileOffers}
-          owner={this.state.owner}
           ask={this.state.ask}
           isMetaMask={this.props.isMetaMask}
         />

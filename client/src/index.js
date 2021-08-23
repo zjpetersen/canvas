@@ -14,19 +14,25 @@ const options = {
   web3: {
     fallback: {
       type: "ws",
-      url: "ws://127.0.0.1:7545",
+      url: "ws://127.0.0.1:8545",
     },
   },
 };
 
 // setup drizzle
 let drizzle;
-let web3 = new Web3(Web3.givenProvider || 'ws://127.0.0.1:7545'); //TODO default as infura
-let networkId;
-web3.eth.net.getId().then(id => {
-  if (id === 1 || id === 4 || id === 5777) {
-    drizzle = new Drizzle(options);
-  }
-  networkId = id;
-  ReactDOM.render(<App drizzle={drizzle} networkId={networkId}/>, document.getElementById('root'));
-});
+if (!Web3.givenProvider) {
+  console.log("No given web3 provider");
+  ReactDOM.render(<App drizzle={drizzle} hasProvider={false} />, document.getElementById('root'));
+} else {
+  let web3 = new Web3(Web3.givenProvider || 'ws://127.0.0.1:8545'); //TODO default as infura
+  let networkId;
+  web3.eth.net.getId().then(id => {
+    if (id === 1 || id === 4 || id === 5777) {
+      drizzle = new Drizzle(options);
+    }
+    networkId = id;
+    ReactDOM.render(<App drizzle={drizzle} networkId={networkId} hasProvider={true}/>, document.getElementById('root'));
+  });
+
+}
