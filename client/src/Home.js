@@ -1,5 +1,6 @@
 import React from 'react';
 import './style/Home.css';
+import EmailForm from './EmailForm';
 import EthBefore from './media/EthBefore.png';
 import EthBeforeSmall from './media/EthBeforeSmall.png';
 import EthAfter from './media/EthAfter.png';
@@ -87,6 +88,7 @@ render() {
       <div className="home content">
         {this.info()}
       </div>
+      <EmailForm />
       <div className="footer">Want to learn more? Check out our GitHub.</div>
      </div>
     );

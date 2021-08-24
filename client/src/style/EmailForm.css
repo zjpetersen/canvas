@@ -1,0 +1,47 @@
+input[type=email], select, textarea {
+  width: 100%; /* Full width */
+  padding: 12px; /* Some padding */ 
+  border: 1px solid #ccc; /* Gray border */
+  border-radius: 4px; /* Rounded borders */
+  box-sizing: border-box; /* Make sure that padding and width stays in place */
+  margin-top: 6px; /* Add a top margin */
+  margin-bottom: 16px; /* Bottom margin */
+  resize: vertical /* Allow the user to vertically resize the textarea (not horizontally) */
+}
+
+/* Add a background color and some padding around the form */
+.container {
+  border-radius: 5px;
+  background-color: #f2f2f2;
+  padding: 20px;
+  box-shadow: 0px 0px 10px 2px #b6b6b6;
+}
+
+.emailForm {
+    margin: 40px 80px;
+}
+
+
+input[type=submit] {
+  /* background-color: #9e5ba4; */
+  background-color: #4180a0;
+  border: none;
+  color: white;
+  padding: 4px 8px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  /* font-size: 16px; */
+  margin: 4px 2px;
+  transition-duration: 0.4s;
+  cursor: pointer;
+  color:white;
+  border-radius: 4px;
+  /* box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19); */
+  border: 1px solid #383838;
+
+}
+
+input[type=submit]:hover {
+  background-color: #32535f;
+}
