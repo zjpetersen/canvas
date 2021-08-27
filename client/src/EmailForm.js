@@ -9,7 +9,7 @@ class EmailForm extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = {email: '', imageDisplayed: false, hex: '', successStatus: false};
+    this.state = {email: '', imageDisplayed: false, hex: '', successStatus: ''};
     this.handleChangeEmail = this.handleChangeEmail.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.emailForm = this.emailForm.bind(this);
@@ -25,7 +25,9 @@ class EmailForm extends React.Component {
     submitEmail(this.state.email, this, function(parent, res) {
         console.log(res)
         if (res.ok) {
-            parent.setState({successStatus: true});
+            parent.setState({successStatus: '200'});
+        } else {
+            parent.setState({successStatus: 'Error'});
         }
     })
   }
@@ -33,15 +35,17 @@ class EmailForm extends React.Component {
   getHttpStatus() {
       if (!this.state.successStatus) {
           return;
+      } else if (this.state.successStatus === 'Error') {
+        return <div>Error while saveing email.  Please try again.</div>;
+      } else {
+          //   this.setState({successStatus: false});
+          return <div>Email submitted successfully! Please check your email to verify.</div>;
       }
-    //   this.setState({successStatus: false});
-      return <div>Email submitted successfully! Please check your email to verify.</div>;
   }
 
   emailForm = () => {
     let result = <div className="container column middle">
-        <h2>Join our email list</h2>
-        <div id="center">Want to be the first to hear about our upcoming Mainnet launch? </div>
+        <h4 id="center">Be the first to hear about our upcoming Mainnet launch.</h4>
         <div id="center">Join our email list below.</div>
       <form onSubmit={(event) => this.handleSubmit(event)}>
           <input
@@ -52,7 +56,7 @@ class EmailForm extends React.Component {
             value={this.state.email}
             onChange={(event) => this.handleChangeEmail(event)} />
         <br />
-        <input type="submit" value="Submit" />
+        <input type="submit" value="Subscribe" />
       </form>
       <div>{this.getHttpStatus()}</div>
     </div>;
