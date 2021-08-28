@@ -4,11 +4,16 @@ export const fetchTiles =(parent, fn) => {
     if (url === "localhost") {
         url = url + ":4000";
     }
-    url = url + "/api/tiles";
+    url = url + "/tiles";
     if (!url.startsWith("http")) {
         url = "http://" + url;
     }
-    fetch(url)
+    fetch(url, {
+        method: 'GET',
+        headers: {
+            'tile-check': 'check'
+        }
+    })
         .then(response => response.json())
         .then(data => fn(parent, data));
 }
@@ -23,7 +28,7 @@ export const submitEmail = (emailStr, parent, fn) => {
         url = "http://" + url;
     }
 
-    url = url + "/api/email";
+    url = url + "/email";
     let data = JSON.stringify({email: emailStr});
 
     fetch(url, {
