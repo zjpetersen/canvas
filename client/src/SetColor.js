@@ -60,6 +60,7 @@ class SetColor extends React.Component {
     if (transactions[txHash] && transactions[txHash].status === 'success') {
       this.props.tilesObj.color = this.state.hex;
       this.setState({stackId: null});
+      this.props.reload();
     } else if (transactions[txHash] && transactions[txHash].status === 'error') {
       this.setState({stackId: null});
     }

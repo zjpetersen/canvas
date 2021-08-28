@@ -36,6 +36,7 @@ class GetUnclaimedTile extends React.Component {
       this.props.tilesObj.owner = this.props.drizzleState.accounts[0];
       this.props.tilesObj.hasOwner = true;
       this.setState({stackId: null});
+      this.props.reload();
     } else if (transactions[txHash] && transactions[txHash].status === 'error') {
       this.setState({stackId: null});
     }

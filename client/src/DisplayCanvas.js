@@ -14,7 +14,7 @@ class DisplayCanvas extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = { tilesArray: null, tiles: null, canvas: null, currentTileId: null, tileOffers: null, owner: null, ask: null, highlightTile: null, showUtilities: false, noOwnedTiles: false};
+    this.state = { tilesArray: null, tiles: null, canvas: null, currentTileId: null, tileOffers: null, owner: null, ask: null, highlightTile: null, showUtilities: false, noOwnedTiles: false, result: null, load: true};
     this.setCurrentTile = this.setCurrentTile.bind(this);
     this.getColor = this.getColor.bind(this);
     this.highlightTile = this.highlightTile.bind(this);
@@ -227,15 +227,28 @@ class DisplayCanvas extends React.Component {
     if (!this.state.tilesArray) {
       return this.loading();
     }
+    //Cache the results to load faster when tiles are clicked on
+    if (!this.state.load) {
+      return <div id="divCanvas">{this.state.result}</div>;
+    }
     let tiles = this.state.tilesArray;
 
     let result = [];
+    let currTime = Date.now();
 
     for (let i = 0; i < tiles.length; i+=ROW_SIZE) {
         result.push(this.buildRow(tiles, i, i+ROW_SIZE, ROW_SIZE));
     }
+    this.setState({result: result, load: false});
+    let ms = Date.now() - currTime;
+    console.log("Time to load canvas: " + ms);
 
     return <div id="divCanvas">{result}</div>;
+  }
+
+  //Used for child components to reload the mosaic
+  reload = () => {
+    this.setState({load: true});
   }
 
   getHtmlCanvas = () => {
@@ -262,6 +275,7 @@ class DisplayCanvas extends React.Component {
           offerRef={this.state.tileOffers}
           ask={this.state.ask}
           isMetaMask={this.props.isMetaMask}
+          reload = {this.reload}
         />
       </div>
     );
