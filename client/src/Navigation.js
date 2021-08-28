@@ -1,7 +1,8 @@
 import React from 'react';
 import './style/Navigation.css';
 import './style/Home.css';
-import logo from './media/MosaicLogo5.png';
+// import logo from './media/MosaicLogo5.png';
+import logo from './media/MosaicLogo48px.png';
 import {
   NavLink
 } from "react-router-dom";
@@ -26,7 +27,7 @@ canvasLink = () => {
             <div className="column leftInner" >
               <span className="helper"></span>
               <img id="logo" src={logo} alt="Mosaic logo" />
-              <p id="logoText">Mosaic</p>
+              <p id="logoText">CryptoCanvas</p>
             </div>
             <div className="column rightInner" >
               <span className="helper"></span>

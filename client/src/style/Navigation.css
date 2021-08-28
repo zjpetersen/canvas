@@ -25,11 +25,12 @@
 
 #logo {
   float: left;
-  width: 64px;
-  height: 64px;
+  width: 48px;
+  height: 48px;
   position: relative;
   top: 50%;
-  transform: translateY(50%);
+  transform: translateY(80%);
+  margin: 4px;
 }
 
 #logoText {
