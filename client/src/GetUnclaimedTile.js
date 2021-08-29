@@ -12,7 +12,7 @@ class GetUnclaimedTile extends React.Component {
 
   handleSubmit(event) {
     const { drizzle, drizzleState } = this.props;
-    const contract = drizzle.contracts.MosaicTiles;
+    const contract = drizzle.contracts.CryptoCanvas;
     console.log(contract);
     const stackId = contract.methods["mintTile"].cacheSend(this.props.tileId, {
       from: drizzleState.accounts[0]

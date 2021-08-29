@@ -6,11 +6,11 @@ import Web3 from "web3";
 
 // import drizzle functions and contract artifact
 import { Drizzle } from "@drizzle/store";
-import MosaicTiles from "./contracts/MosaicTiles.json";
+import CryptoCanvas from "./contracts/CryptoCanvas.json";
 
 // let drizzle know what contracts we want and how to access our test blockchain
 const options = {
-  contracts: [MosaicTiles],
+  contracts: [CryptoCanvas],
   web3: {
     fallback: {
       type: "ws",
