@@ -47,13 +47,12 @@ class DisplayCanvas extends React.Component {
 
   getColor(tile, i) {
       if (tile.owner !== "0x0000000000000000000000000000000000000000") {
-        return "#7d7d7d";
+        return "#fff8ee";
       } else {
         if (i % 10 === 0) {
-          // return "#8b658f";
           return "#4180a0";
         }
-        return "#fff8ee";
+        return "#7d7d7d";
       }
   }
 

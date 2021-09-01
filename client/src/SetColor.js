@@ -157,6 +157,10 @@ class SetColor extends React.Component {
       if (picDiv && picDiv.hasChildNodes()) {
        picDiv.removeChild(picDiv.firstChild);
       }
+      let uploadedFiles = document.getElementById("file-selector");
+      if (uploadedFiles) {
+        uploadedFiles.value="";
+      }
     }
     if (!this.props.owner || !this.props.drizzleState.accounts || this.props.owner !== this.props.drizzleState.accounts[0]) {
       return;
