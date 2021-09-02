@@ -12,6 +12,8 @@ class Home extends React.Component {
         
         </div>
         <div className="column middle">
+          <p>**Note CryptoCanvas is currently deployed on the Rinkeby testnet.  Stay tuned for mainnet release!</p>
+
           <h2>How does it work?</h2>
           <p>CryptoCanvas is a Dapp running on the ethereum blockchain.  
             It is a digital canvas made up of 7056 non-fungible tokens (tiles).  Tile owners are able to create their own artwork and add their updated tile to the <a href="/canvas">Canvas</a>.
@@ -24,7 +26,7 @@ class Home extends React.Component {
 
           <h4>Trading tiles</h4>
           <p>Like other NFTs, you can buy and sell your NFT (the tile) whenever you want.  
-            Trading can be done through any NFT marketplace, although <a href="https://opensea.io/">OpenSea</a> is where they will be initially listed. 
+            Trading can be done through any NFT marketplace, although <a href="https://testnets.opensea.io/collection/cryptocanvas">OpenSea</a> is where they will be initially listed. 
             If you are interested in purchasing a tile, checkout the 'How Can I purchase a tile?' section below.
             </p>
 
@@ -46,7 +48,7 @@ class Home extends React.Component {
             <ol>
               <li>Install the Chrome extension <a href="https://metamask.io/">MetaMask</a>.</li>
               <li>Send some Ethereum to your MetaMask wallet.  For example, from your Coinbase wallet.</li>
-              <li>Navigate to the <a href="https://opensea.io">OpenSea collection</a> and pick a tile you're interested in.</li>
+              <li>Navigate to the <a href="https://testnets.opensea.io/collection/cryptocanvas">OpenSea Testnet collection</a> and pick a tile you're interested in.</li>
               <li>Click the 'Buy Now' button.  Congratulations! You now have your own NFT!</li>
               <li>Check out the <a href="https://support.opensea.io/hc/en-us/articles/360063518033-How-do-I-buy-fixed-price-NFTs-">OpenSea documentation</a> for detailed instructions.</li>
             </ol>
@@ -70,7 +72,16 @@ render() {
         {this.info()}
       </div>
       <EmailForm />
-      <div className="footer">Want to learn more? Check out our GitHub.</div>
+      <div className="footer">
+        
+        <div className="column left">
+          Want to learn more? Check out our <a href="https://github.com/zjpetersen/canvas-contracts">GitHub</a>.
+        </div>
+        <div className="column middle">
+          Testnet: 0x59b6722596e25a8721AB26664a2AfbF1C7D90818
+        </div>
+        <div className="column right"></div>
+     </div>
      </div>
     );
 }

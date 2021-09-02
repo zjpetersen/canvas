@@ -6,7 +6,7 @@ export const fetchTiles =(parent, fn) => {
     }
     url = url + "/tiles";
     if (!url.startsWith("http")) {
-        url = "http://" + url;
+        url = "https://" + url;
     }
     fetch(url, {
         method: 'GET',
@@ -25,7 +25,7 @@ export const submitEmail = (emailStr, parent, fn) => {
         url = url + ":4000";
     }
     if (!url.startsWith("http")) {
-        url = "http://" + url;
+        url = "https://" + url;
     }
 
     url = url + "/email";

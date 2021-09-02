@@ -63,11 +63,12 @@ class App extends React.Component {
           <p>This browser has no connection to the Ethereum network. Please use the Chrome/FireFox extension MetaMask, or dedicated Ethereum browsers Mist or Parity.</p>
         </main>
       )
-    } else if (this.props.networkId && (this.props.networkId !== 1 && this.props.networkId !== 4 && this.props.networkId !== 5777) ) {
+    // } else if (this.props.networkId && (this.props.networkId !== 1 && this.props.networkId !== 4 && this.props.networkId !== 5777) ) {
+    } else if (this.props.networkId && (this.props.networkId !== 4 && this.props.networkId !== 5777) ) {
       return (
         <main>
           <h1>⚠️</h1>
-          <p>This dapp only supports connecting to Mainnet and Rinkeby.  Please change your network to get the full experience.</p>
+          <p>This dapp only supports connecting to Rinkeby.  Please change your network to get the full experience.</p>
         <Router>
           <div className="App">
             <Navigation displayCanvas={true}/>
