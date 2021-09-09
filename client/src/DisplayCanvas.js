@@ -72,7 +72,7 @@ class DisplayCanvas extends React.Component {
       if (this.state.highlightTile) {
         if (this.state.highlightTile.includes(i)) {
           //Only want to highlight div if the image is empty
-          if (!imgSrc.startsWith("data:image") && !tile.invalidColor) {
+          if (!imgSrc.startsWith("data:image") || (!tile.updatedColor && !tile.invalidColor)) {
             id = "canvasElementHighlight";
           }
           imgId = "canvasImgHighlight";
@@ -118,6 +118,7 @@ class DisplayCanvas extends React.Component {
   handleHighlightTileSubmit(event) {
       event.preventDefault();
     this.setState({highlightTile: [Number(this.state.highlightTilePending)]});
+    this.reload();
     console.log("Highlight tile: " + [this.state.highlightTilePending]); 
   }
 
@@ -135,6 +136,7 @@ class DisplayCanvas extends React.Component {
     console.log(toHighlight);
     if (toHighlight.length !== 0) {
       this.setState({highlightTile: toHighlight, noOwnedTiles: false});
+      this.reload();
     } else {
       this.setState({noOwnedTiles: true});
     }
@@ -142,6 +144,7 @@ class DisplayCanvas extends React.Component {
 
   handleClearHighlightsSubmit(event) {
     this.setState({highlightTile: null});
+    this.reload();
   }
 
   handleShowUtilities(event) {
