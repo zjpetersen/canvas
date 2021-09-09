@@ -72,7 +72,7 @@ class SetColor extends React.Component {
       return;
     }
     let result = <div className="center">
-      <button className="basic" type="button" onClick={() => this.handleSubmit()}>Update Color</button>
+      <button className="basic" type="button" onClick={() => this.handleSubmit()}>Submit Artwork</button>
       <div>{this.getTxStatus()}</div>
       <br />
       <br />
