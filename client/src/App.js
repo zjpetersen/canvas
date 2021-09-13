@@ -1,6 +1,7 @@
 import React from 'react';
 import DisplayCanvas from "./DisplayCanvas";
 import Home from './Home';
+import PrivacyPolicy from './PrivacyPolicy';
 import {
   BrowserRouter as Router,
   Switch,
@@ -90,6 +91,7 @@ class App extends React.Component {
           <Route exact path='/bonus' component={SetColor drizzle={this.props.drizzle} drizzleState={this.props.drizzleState}}></Route> */}
               <Route exact path='/' ><Home drizzle={this.props.drizzle} drizzleState={this.state.drizzleState}/></Route>
               <Route exact path='/canvas' > <DisplayCanvas drizzle={this.props.drizzle} drizzleState={this.state.drizzleState} isMetaMask={window.ethereum && window.ethereum.isMetaMask}/></Route>
+              <Route exact path='/privacy' > <PrivacyPolicy /></Route>
             </Switch>
           </div>
         </Router>

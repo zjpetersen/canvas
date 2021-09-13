@@ -80,7 +80,9 @@ render() {
         <div className="column middle">
           Testnet: 0x59b6722596e25a8721AB26664a2AfbF1C7D90818
         </div>
-        <div className="column right"></div>
+        <div className="column right">
+          <a href="/privacy">Privacy Policy</a>
+        </div>
      </div>
      </div>
     );
