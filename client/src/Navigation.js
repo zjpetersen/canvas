@@ -26,8 +26,8 @@ canvasLink = () => {
           <div className="row">
             <div className="column leftInner" >
               <span className="helper"></span>
-              <img id="logo" src={logo} alt="CryptoCanvas logo" />
-              <p id="logoText">CryptoCanvas</p>
+              <img id="logo" src={logo} alt="EtherCanvas logo" />
+              <p id="logoText">EtherCanvas</p>
             </div>
             <div className="column rightInner" >
               <span className="helper"></span>
