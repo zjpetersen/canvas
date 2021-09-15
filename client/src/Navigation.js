@@ -9,13 +9,10 @@ import {
 
 class Navigation extends React.Component {
 
-canvasLink = () => {
-  if (this.props.displayCanvas) {
+faqLink = () => {
     return <li id="navli">
       <NavLink id="nav" exact activeClassName="current" to="/faq">FAQ</NavLink>
     </li>;
-  }
-  return;
   }
 
   render() {
@@ -33,9 +30,20 @@ canvasLink = () => {
               <span className="helper"></span>
               <ul id="navul">
                 <li id="navli">
-                  <NavLink id="nav" exact activeClassName="current" to="/">Canvas</NavLink>
+                  {/* <NavLink id="nav" activeClassName="current" to="/">Canvas</NavLink> */}
+                  <NavLink 
+                    id="nav"
+                    to="/"
+                    activeClassName="current"
+                    isActive={(match, location) => {
+                      if (!match) {
+                        return false;
+                      }
+                      return (match.isExact || location.pathname.includes('tile'));
+                    }}
+                    >Canvas</NavLink>
                 </li>
-                {this.canvasLink()}
+                {this.faqLink()}
               </ul>
             </div>
           </div>

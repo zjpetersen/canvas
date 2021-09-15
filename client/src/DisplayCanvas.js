@@ -243,7 +243,7 @@ class DisplayCanvas extends React.Component {
     }
     this.setState({result: result, load: false});
     let ms = Date.now() - currTime;
-    console.log("Time to load canvas: " + ms);
+    // console.log("Time to load canvas: " + ms);
 
     return <div id="divCanvas">{result}</div>;
   }
@@ -267,8 +267,7 @@ class DisplayCanvas extends React.Component {
     }
     let id = parseInt(this.props.tileId.match.params.tileId);
 
-    if (!this.state.currentTileId && id && Number.isInteger(id) && id > -1 && id < 7056) {
-      console.log("Setting id");
+    if (this.state.currentTileId === null && Number.isInteger(id) && id > -1 && id < 7056) {
       this.setCurrentTile(id);
     }
 
