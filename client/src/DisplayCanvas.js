@@ -261,7 +261,21 @@ class DisplayCanvas extends React.Component {
     return result;
   }
 
+  checkIdParam = () => {
+    if (!this.props.tileId) {
+      return;
+    }
+    let id = parseInt(this.props.tileId.match.params.tileId);
+
+    if (!this.state.currentTileId && id && Number.isInteger(id) && id > -1 && id < 7056) {
+      console.log("Setting id");
+      this.setCurrentTile(id);
+    }
+
+  }
+
   render() {
+    this.checkIdParam();
     return (
       <div id="center">
         {this.buildCanvas()}

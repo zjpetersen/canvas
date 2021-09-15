@@ -75,7 +75,7 @@ render() {
         <div className="row footer">
 
           <div className="column left">
-            <a href="https://twitter.com/EtherCanvasNFT" class="fa fa-twitter"></a>
+            <a href="https://twitter.com/EtherCanvasNFT" className="fa fa-twitter"></a>
             <a className="fa fa-github" href="https://github.com/zjpetersen/canvas-contracts"></a>
           </div>
           <div className="column middle">

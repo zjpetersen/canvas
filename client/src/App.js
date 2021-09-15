@@ -75,6 +75,7 @@ class App extends React.Component {
             <Navigation displayCanvas={true}/>
             <Switch> 
               <Route exact path='/' > <DisplayCanvas drizzle={this.props.drizzle} drizzleState={this.state.drizzleState} isMetaMask={false}/></Route>
+              <Route path='/tile/:tileId' render={(tileId) => <DisplayCanvas tileId={tileId} drizzle={this.props.drizzle} drizzleState={this.state.drizzleState} isMetaMask={false}/>}></Route>
               <Route exact path='/faq' ><Home drizzle={this.props.drizzle} drizzleState={this.state.drizzleState}/></Route>
             </Switch>
           </div>
@@ -90,6 +91,7 @@ class App extends React.Component {
               {/* <Route exact path='/' component={Main}></Route>
           <Route exact path='/bonus' component={SetColor drizzle={this.props.drizzle} drizzleState={this.props.drizzleState}}></Route> */}
               <Route exact path='/' > <DisplayCanvas drizzle={this.props.drizzle} drizzleState={this.state.drizzleState} isMetaMask={window.ethereum && window.ethereum.isMetaMask}/></Route>
+              <Route path='/tile/:tileId' render={(tileId) => <DisplayCanvas tileId={tileId} drizzle={this.props.drizzle} drizzleState={this.state.drizzleState} isMetaMask={window.ethereum && window.ethereum.isMetaMask}/>}></Route>
               <Route exact path='/faq' ><Home drizzle={this.props.drizzle} drizzleState={this.state.drizzleState}/></Route>
               <Route exact path='/privacy' > <PrivacyPolicy /></Route>
             </Switch>
