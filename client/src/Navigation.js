@@ -12,7 +12,7 @@ class Navigation extends React.Component {
 canvasLink = () => {
   if (this.props.displayCanvas) {
     return <li id="navli">
-      <NavLink id="nav" exact activeClassName="current" to="/canvas">Canvas</NavLink>
+      <NavLink id="nav" exact activeClassName="current" to="/faq">FAQ</NavLink>
     </li>;
   }
   return;
@@ -20,7 +20,7 @@ canvasLink = () => {
 
   render() {
     return (
-      <div className="row">
+      <div className="row padBottom">
         <div className="column left" />
         <div className="column middle">
           <div className="row">
@@ -33,7 +33,7 @@ canvasLink = () => {
               <span className="helper"></span>
               <ul id="navul">
                 <li id="navli">
-                  <NavLink id="nav" exact activeClassName="current" to="/">Home</NavLink>
+                  <NavLink id="nav" exact activeClassName="current" to="/">Canvas</NavLink>
                 </li>
                 {this.canvasLink()}
               </ul>

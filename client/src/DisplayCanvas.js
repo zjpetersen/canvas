@@ -264,7 +264,6 @@ class DisplayCanvas extends React.Component {
   render() {
     return (
       <div id="center">
-        <h2>Canvas</h2>
         {this.buildCanvas()}
         {this.mosaicUtilites()}
 

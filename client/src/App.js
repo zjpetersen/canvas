@@ -74,8 +74,8 @@ class App extends React.Component {
           <div className="App">
             <Navigation displayCanvas={true}/>
             <Switch> 
-              <Route exact path='/' ><Home drizzle={this.props.drizzle} drizzleState={this.state.drizzleState}/></Route>
-              <Route exact path='/canvas' > <DisplayCanvas drizzle={this.props.drizzle} drizzleState={this.state.drizzleState} isMetaMask={false}/></Route>
+              <Route exact path='/' > <DisplayCanvas drizzle={this.props.drizzle} drizzleState={this.state.drizzleState} isMetaMask={false}/></Route>
+              <Route exact path='/faq' ><Home drizzle={this.props.drizzle} drizzleState={this.state.drizzleState}/></Route>
             </Switch>
           </div>
         </Router>
@@ -89,8 +89,8 @@ class App extends React.Component {
             <Switch> {/* The Switch decides which component to show based on the current URL.*/}
               {/* <Route exact path='/' component={Main}></Route>
           <Route exact path='/bonus' component={SetColor drizzle={this.props.drizzle} drizzleState={this.props.drizzleState}}></Route> */}
-              <Route exact path='/' ><Home drizzle={this.props.drizzle} drizzleState={this.state.drizzleState}/></Route>
-              <Route exact path='/canvas' > <DisplayCanvas drizzle={this.props.drizzle} drizzleState={this.state.drizzleState} isMetaMask={window.ethereum && window.ethereum.isMetaMask}/></Route>
+              <Route exact path='/' > <DisplayCanvas drizzle={this.props.drizzle} drizzleState={this.state.drizzleState} isMetaMask={window.ethereum && window.ethereum.isMetaMask}/></Route>
+              <Route exact path='/faq' ><Home drizzle={this.props.drizzle} drizzleState={this.state.drizzleState}/></Route>
               <Route exact path='/privacy' > <PrivacyPolicy /></Route>
             </Switch>
           </div>

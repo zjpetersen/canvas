@@ -76,13 +76,13 @@ render() {
 
           <div className="column left">
             <a href="https://twitter.com/EtherCanvasNFT" class="fa fa-twitter"></a>
-            <a class="fa fa-github" href="https://github.com/zjpetersen/canvas-contracts"></a>
+            <a className="fa fa-github" href="https://github.com/zjpetersen/canvas-contracts"></a>
           </div>
           <div className="column middle">
             Testnet: 0x59b6722596e25a8721AB26664a2AfbF1C7D90818
           </div>
           <div className="column right">
-            <a class="linkButton" href="/privacy">Privacy Policy</a>
+            <a className="linkButton" href="/privacy">Privacy Policy</a>
           </div>
         </div>
       </div>
