@@ -60,12 +60,15 @@ class SetColor extends React.Component {
     // otherwise, update the color if success
     if (transactions[txHash] && transactions[txHash].status === 'success') {
       this.props.tilesObj.color = this.state.hex;
+      this.removeUploadedPic();
       this.setState({stackId: null});
       this.props.reload();
     } else if (transactions[txHash] && transactions[txHash].status === 'error') {
+      this.removeUploadedPic();
       this.setState({stackId: null});
     }
-    return null;
+
+    return `Transaction status: ${transactions[txHash] && transactions[txHash].status}`;
   };
 
   updateColor = () => {
@@ -289,9 +292,23 @@ class SetColor extends React.Component {
     return <div>
       <button className="small" type="button" onClick={() => this.toggleBulkMode()}>{msg}</button>
       <br></br>
+      <br></br>
       <input type="file" id="file-selector" onChange={(e) => this.readFile(e)} />
       <p style={{ color: "red" }}>{bulkWarning}</p>
     </div>
+
+  }
+
+  removeUploadedPic() {
+      this.setState({tileId: this.props.tileId, color: '', hex: '', stackId: null, imageDisplayed: false});
+      let picDiv = document.getElementById("pic");
+      if (picDiv && picDiv.hasChildNodes()) {
+       picDiv.removeChild(picDiv.firstChild);
+      }
+      let uploadedFiles = document.getElementById("file-selector");
+      if (uploadedFiles) {
+        uploadedFiles.value="";
+      }
 
   }
 
@@ -303,15 +320,7 @@ class SetColor extends React.Component {
     //TODO this gives a warning...
     if (this.state.tileId === '' || (this.state.tileId !== '' && this.state.tileId !== this.props.tileId)) {
       console.log("Clicked on new tile");
-      this.setState({tileId: this.props.tileId, color: '', hex: '', stackId: null, imageDisplayed: false});
-      let picDiv = document.getElementById("pic");
-      if (picDiv && picDiv.hasChildNodes()) {
-       picDiv.removeChild(picDiv.firstChild);
-      }
-      let uploadedFiles = document.getElementById("file-selector");
-      if (uploadedFiles) {
-        uploadedFiles.value="";
-      }
+      this.removeUploadedPic();
     }
     if (!this.props.owner || !this.props.drizzleState.accounts || this.props.owner !== this.props.drizzleState.accounts[0]) {
       return;
