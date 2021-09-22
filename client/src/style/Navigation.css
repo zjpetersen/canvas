@@ -1,0 +1,69 @@
+#navul {
+  list-style-type: none;
+  padding: 0;
+  overflow: hidden;
+  position: relative;
+  top: 50%;
+  transform: translateY(50%);
+
+}
+
+.color {
+  background-color: rgb(197, 206, 255);
+}
+
+
+#navli {
+  float: left;
+} 
+
+.helper {
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+}
+
+#logo {
+  float: left;
+  width: 48px;
+  height: 48px;
+  position: relative;
+  top: 50%;
+  transform: translateY(80%);
+  margin: 4px;
+}
+
+#logoText {
+  font-size: 30px;
+  font-family: Georgia;
+}
+
+#nav {
+      display: block;
+  text-align: center;
+  padding: 10px 16px;
+  text-decoration: none;
+    color:#333;
+    text-decoration: none;
+    /* margin-bottom: 5px; */
+}
+
+.padBottom {
+  margin-bottom: 30px;
+}
+
+/* Change the link color to #111 (black) on hover */
+#navli a:hover {
+    /* color: #856f9e; */
+  /* background-color: rgb(255, 170, 58); */
+  background-color: #497921;
+}
+
+/* .active {
+  background-color: #4CAF50;
+} */
+.current {
+    /* border-bottom: 4px solid white; */
+    /* background-color: rgb(255, 207, 152); */
+    background-color: #7bb24e;
+}
