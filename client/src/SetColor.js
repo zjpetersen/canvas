@@ -173,7 +173,7 @@ class SetColor extends React.Component {
     let fileRows = [];
     let fileNames = this.state.fileNames;
     for (let i = 0; i < fileNames.length; i++) {
-      let row = <div key={i}>Uploaded file: {fileNames[i]}, position: {i}</div>;
+      let row = <div key={i}>Uploaded file: {fileNames[i]}, position: {i+1}</div>;
       fileRows.push(row);
 
     }
