@@ -29,7 +29,7 @@ if (!Web3.givenProvider) {
   let networkId;
   web3.eth.net.getId().then(id => {
     // if (id === 1 || id === 4 || id === 5777) {
-    if (id === 4 || id === 5777) {
+    if (id === 4 || id === 5777 || id === 80001) {
       drizzle = new Drizzle(options);
     }
     networkId = id;

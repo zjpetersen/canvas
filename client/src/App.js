@@ -1,6 +1,7 @@
 import React from 'react';
 import DisplayCanvas from "./DisplayCanvas";
 import Home from './Home';
+import UploadArtworkInstructions from './UploadArtworkInstructions';
 import PrivacyPolicy from './PrivacyPolicy';
 import {
   BrowserRouter as Router,
@@ -65,7 +66,7 @@ class App extends React.Component {
         </main>
       )
     // } else if (this.props.networkId && (this.props.networkId !== 1 && this.props.networkId !== 4 && this.props.networkId !== 5777) ) {
-    } else if (this.props.networkId && (this.props.networkId !== 4 && this.props.networkId !== 5777) ) {
+    } else if (this.props.networkId && (this.props.networkId !== 4 && this.props.networkId !== 5777 && this.props.networkId !== 80001) ) {
       return (
         <main>
           <h1>⚠️</h1>
@@ -76,7 +77,9 @@ class App extends React.Component {
             <Switch> 
               <Route exact path='/' > <DisplayCanvas drizzle={this.props.drizzle} drizzleState={this.state.drizzleState} isMetaMask={false}/></Route>
               <Route path='/tile/:tileId' render={(tileId) => <DisplayCanvas tileId={tileId} drizzle={this.props.drizzle} drizzleState={this.state.drizzleState} isMetaMask={false}/>}></Route>
+              <Route exact path='/upload' ><UploadArtworkInstructions drizzle={this.props.drizzle} drizzleState={this.state.drizzleState}/></Route>
               <Route exact path='/faq' ><Home drizzle={this.props.drizzle} drizzleState={this.state.drizzleState}/></Route>
+              <Route exact path='/privacy' > <PrivacyPolicy /></Route>
             </Switch>
           </div>
         </Router>
@@ -93,6 +96,7 @@ class App extends React.Component {
               <Route exact path='/' > <DisplayCanvas drizzle={this.props.drizzle} drizzleState={this.state.drizzleState} isMetaMask={window.ethereum && window.ethereum.isMetaMask}/></Route>
               <Route path='/tile/:tileId' render={(tileId) => <DisplayCanvas tileId={tileId} drizzle={this.props.drizzle} drizzleState={this.state.drizzleState} isMetaMask={window.ethereum && window.ethereum.isMetaMask}/>}></Route>
               <Route exact path='/faq' ><Home drizzle={this.props.drizzle} drizzleState={this.state.drizzleState}/></Route>
+              <Route exact path='/upload' ><UploadArtworkInstructions drizzle={this.props.drizzle} drizzleState={this.state.drizzleState}/></Route>
               <Route exact path='/privacy' > <PrivacyPolicy /></Route>
             </Switch>
           </div>

@@ -15,6 +15,12 @@ faqLink = () => {
     </li>;
   }
 
+uploadLink = () => {
+    return <li id="navli">
+      <NavLink id="nav" exact activeClassName="current" to="/upload">Adding Art</NavLink>
+    </li>;
+  }
+
   render() {
     return (
       <div className="row padBottom">
@@ -44,6 +50,7 @@ faqLink = () => {
                     >Canvas</NavLink>
                 </li>
                 {this.faqLink()}
+                {this.uploadLink()}
               </ul>
             </div>
           </div>
