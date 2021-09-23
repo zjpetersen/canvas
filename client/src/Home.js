@@ -79,6 +79,9 @@ render() {
             <a className="fa fa-github" href="https://github.com/zjpetersen/canvas-contracts"></a>
           </div>
           <div className="column middle">
+            Polygon: 0xb8120f116f88942ACF50B1d797977FefDaB206e0
+            <br></br>
+            <br></br>
             Testnet: 0x59b6722596e25a8721AB26664a2AfbF1C7D90818
           </div>
           <div className="column right">

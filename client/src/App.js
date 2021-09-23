@@ -66,11 +66,11 @@ class App extends React.Component {
         </main>
       )
     // } else if (this.props.networkId && (this.props.networkId !== 1 && this.props.networkId !== 4 && this.props.networkId !== 5777) ) {
-    } else if (this.props.networkId && (this.props.networkId !== 4 && this.props.networkId !== 5777 && this.props.networkId !== 80001) ) {
+    } else if (this.props.networkId && (this.props.networkId !== 4 && this.props.networkId !== 5777 && this.props.networkId !== 137) ) {
       return (
         <main>
           <h1>⚠️</h1>
-          <p>This dapp only supports connecting to Rinkeby.  Please change your network to get the full experience.</p>
+          <p>This dapp only supports connecting to Polygon.  Please <a href="https://docs.polygon.technology/docs/develop/metamask/config-polygon-on-metamask">change your network</a> to get the full experience.</p>
         <Router>
           <div className="App">
             <Navigation displayCanvas={true}/>
