@@ -45,8 +45,8 @@ class EmailForm extends React.Component {
 
   emailForm = () => {
     let result = <div className="container column middle">
-        <h4 id="center">Be the first to hear about our upcoming Mainnet launch.</h4>
-        <div id="center">Join our email list below.</div>
+        <h2 id="center">Connect with us!</h2>
+        <div id="center">Join our email list below or reach out on <a href="https://twitter.com/EtherCanvasNFT">Twitter</a>.</div>
       <form onSubmit={(event) => this.handleSubmit(event)}>
           <input
             name="email"
