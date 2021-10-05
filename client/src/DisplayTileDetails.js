@@ -18,6 +18,15 @@ class DisplayTileDetails extends React.Component {
     return;
   }
 
+  getOpenSeaLink = (tile) => {
+    if (tile) {
+      let link = "https://opensea.io/assets/matic/0xbd21cf77e72b2f1cbc60f40dd36ed843fb793dd2/" + this.props.tileId;
+      return <div>
+        <p>Interested in buying? <a href={link} >Check out on OpenSea</a>!</p>
+        </div>
+    }
+  }
+
   getPicture = (tile) => {
     if (tile) {
       let imgSrc = tile.color;
@@ -77,6 +86,7 @@ class DisplayTileDetails extends React.Component {
             <p>Tile details for tile {this.props.tileId}</p>
             {this.getPicture(secObj)}
             {this.getOwner(secObj)}
+            {this.getOpenSeaLink(secObj)}
           </div>
           <GetUnclaimedTile
             drizzle={this.props.drizzle}
