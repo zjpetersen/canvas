@@ -3,6 +3,7 @@ import {Base64} from 'js-base64';
 import './style/SetColor.css';
 import './style/Alert.css';
 import './style/DisplayCanvas.css';
+import { dataUrlToByteArray } from "./Utils";
 
 class SetColor extends React.Component {
 
@@ -205,6 +206,20 @@ class SetColor extends React.Component {
 
   }
 
+  //Resizes if the uploaded image isn't 16x16
+  resize = (i) => {
+    let canvas = document.createElement('canvas');
+    let context = canvas.getContext('2d');
+    canvas.height = 16;
+    canvas.width = 16;
+    context.drawImage(i, 0, 0, 16, 16);
+    let newDataURL = canvas.toDataURL();
+    let newInt8Array = dataUrlToByteArray(newDataURL);
+    console.log(newInt8Array);
+    i.src = newDataURL;
+    this.setState({ color: [newInt8Array] });
+  }
+
   displayColor = () => {
     if (this.state.color === '') {
       return;
@@ -217,18 +232,10 @@ class SetColor extends React.Component {
     let picDiv = document.getElementById("pic");
     i.onload = () => {
       if (i.naturalWidth !== 16 || i.naturalHeight !== 16) {
-        if (picDiv.hasChildNodes()) {
-          picDiv.removeChild(picDiv.firstChild);
-        }
-        let error = document.createTextNode("Error, width and height must both be 16 px");
-        picDiv.appendChild(error);
-        this.setState({color : ''});
-
-      } else {
+        this.resize(i);
+      } 
         this.setState({imageDisplayed: true});
         picDiv.appendChild(i);
-
-      }
     }
     i.src = imgSrc;
     if (picDiv.hasChildNodes()) {
